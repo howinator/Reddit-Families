@@ -9,3 +9,6 @@ https://github.com/praw-dev/praw
 
 http://www.reddit.com/dev/api
 -Reddit's page for their API. It has gooed explanations for each API call.
+
+https://praw.readthedocs.org/en/latest/index.html
+- Here's the documentation and really nice tutorials for Reddit PRAW. This is super duper helpful.
