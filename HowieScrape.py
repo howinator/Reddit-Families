@@ -4,9 +4,12 @@ import praw
 user_agent = ("Subreddit Families 0.0.1 by /u/Howinator")
 r = praw.Reddit(user_agent=user_agent)
 thing_limit = 100
-comments = r.get_comments('all', gilded_only=false, limit=thing_limit)
-author=comment.author
-print(author.name)
+comments = r.get_comments('all', gilded_only=False, limit=thing_limit)
+authors = []
+for comment in comments:
+    authors.append(comment.author)
+
+print(authors[0].name)
 
 
 
