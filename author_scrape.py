@@ -10,7 +10,7 @@ r = praw.Reddit(user_agent = user_name)
 thing_limit = 100
 
 
-num = 10
+num = 302400
 
 for i in xrange(num):
     authors = []
