@@ -32,27 +32,32 @@ n = 10  #number of users to consider
 
 print users[:n]
 
-
-
 user_name = 'smoovewill'
-
 
 r = praw.Reddit(user_agent = user_name)
 
 #dictionarywuh users as keys and set of subreddits as values
 user_subs = dict()
 i = 0
+comments_all = []
 #generate dict of users and sets of subreddits
 for name in users[:n]:
     print i
     i += 1
     user = r.get_redditor(name)
     user_subs[name] = set([])
-    for comment in user.get_comments():
-        user_subs[name].add(comment.subreddit.display_name)
-        time.sleep(2)
-        
-             
+    comments = user.get_comments(limit = 100)
+    for comment in comments:
+        comments_all.append(comment.subreddit.display_name)
+#    comments = user.get_comments(limit=100)
+#    time.sleep(2)
+#    comments_all.append(comments.subreddit.display_name)
+#    for comment in comments:
+#        user_subs[name].add(comment.subreddit.display_name)
+
+
+print len(comments_all)
+'''             
 #subs = set().union(*user_subs)
 #generate set of subreddits
 subs = set([])
@@ -88,4 +93,4 @@ nx.draw(G)
 plt.show()
 
 
-
+'''
