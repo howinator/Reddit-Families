@@ -1,0 +1,24 @@
+user_name               (No. of names)    int
+body                    (100)             str
+created                 (100)             float
+created_utc             (100)             float
+distinguished           (100)             int?
+downs                   (100)             int
+edited                  (100)             bool
+gilded                  (100)             int
+has_fetched             (100)             bool
+id                      (100)             str
+json_dict               (100)             NOT SURE
+likes                   (100)             int
+link_author             (100)             str
+link_id                 (100)             str
+link_title              (100)             str
+link_url                (100)             str
+name                    (100)             str
+num_reports             (100)             int?
+parent_id               (100)             str
+saved                   (100)             bool
+score_hidden            (100)             bool
+subreddit.display_name  (100)             str
+subreddit_id            (100)             str
+ups                     (100)             str
