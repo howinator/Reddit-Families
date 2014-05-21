@@ -121,7 +121,6 @@ for name in users[:n]:
         
         j += 1
 print NuBo[:]
-'''             
 #subs = set().union(*user_subs)
 #generate set of subreddits
 subs = set([])
@@ -156,4 +155,3 @@ G = nx.to_networkx_graph(A)
 nx.draw(G)
 plt.show()
 
-'''

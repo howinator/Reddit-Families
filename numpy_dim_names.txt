@@ -2,7 +2,7 @@ user_name                            str
 body                                 str
 created                              float
 created_utc                          float
-distinguished                        int?
+distinguished                        int
 downs                                int
 edited                               bool
 gilded                               int
