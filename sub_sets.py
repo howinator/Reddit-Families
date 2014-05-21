@@ -1,4 +1,4 @@
-#This scripttakes the author list, generates the subreddits they comment
+#This script takes the author list, generates the subreddits they comment
 #in, and generates and draws a graph where the nodes are subreddits
 #and connections are made when a user has a comment in two subreddits
 #you'll need networkx (you can just sudo pip install networkx)
@@ -27,7 +27,7 @@ users = ['' for i in xrange(len(u))]
 for i in xrange(len(u)):
     users[i] = u[i].strip()
         
-n = 1  #number of users to consider
+n = 10  #number of users to consider
 
 print users[:n]
 
@@ -92,6 +92,13 @@ for name in users[:n]:
         
         # 'distinguished', 'likes', 'num_reports' may be NoneTypes, so they
         # must be converted to int
+        '''
+        just commented this next part out to save running time while 
+         working on the graph.  We might consider throwing this in a
+        separate script 
+            -Sarang
+        '''
+        '''
         ChDi = int(0 if comment.distinguished is None else 
                 comment.distinguished)
         ChLi = int(0 if comment.likes is None else comment.likes)
@@ -118,9 +125,9 @@ for name in users[:n]:
         NuSuN[j] = comment.subreddit.display_name
         NuSuI[j] = comment.subreddit_id
         NuUp[j] = comment.ups
-        
+        '''
         j += 1
-print NuBo[:]
+#print NuBo[:]
 #subs = set().union(*user_subs)
 #generate set of subreddits
 subs = set([])
@@ -149,9 +156,27 @@ for i in xrange(len(sub_users.keys())):
         A[j,i] = A[i,j]
 
 print A
+print 'max weight is', np.amax(A)
+
+
+#generate node sizes based on subreddit sizes
+sizes = np.zeros(len(sub_users.keys()))
+for i in xrange(len(sub_users.keys())):
+    sizes[i] = r.get_subreddit(sub_users.keys()[i]).subscribers
+
+print np.array(sizes)
+print 10* np.log(.01*sizes)
+
+#generate node labels for large subreddits
+labels = dict()  # ['' for i in xrange(len(sub_users.keys()))]
+for i in xrange(len(sub_users.keys())):
+    if sizes[i] >= 1000000:
+       labels[i] = sub_users.keys()[i]
+       
+
 
 #draw graph from A
 G = nx.to_networkx_graph(A)
-nx.draw(G)
+nx.draw_spring(G,node_size = 100* np.log(.00001*sizes),width = .05,labels = labels,font_size = 8,linewidths = 0)
 plt.show()
 
