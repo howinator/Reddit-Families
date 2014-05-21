@@ -8,6 +8,9 @@ import numpy as np
 import time
 import networkx as nx
 from matplotlib import pyplot as plt
+from tempfile import TemporaryFile
+
+numpy_saved = TemporaryFile()
 
 #print repr(open('authors.csv','rb').read(200))
 '''
@@ -27,7 +30,11 @@ users = ['' for i in xrange(len(u))]
 for i in xrange(len(u)):
     users[i] = u[i].strip()
         
+<<<<<<< HEAD
 n = 10  #number of users to consider
+=======
+n = 8000  #number of users to consider
+>>>>>>> 4617a06375b3ed29ac2d184881dbd816f6ae05cc
 
 print users[:n]
 
@@ -127,7 +134,11 @@ for name in users[:n]:
         NuUp[j] = comment.ups
         '''
         j += 1
+<<<<<<< HEAD
 #print NuBo[:]
+=======
+np.save(numpy_saved, CommInfo)
+>>>>>>> 4617a06375b3ed29ac2d184881dbd816f6ae05cc
 #subs = set().union(*user_subs)
 #generate set of subreddits
 subs = set([])
