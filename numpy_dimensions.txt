@@ -1,24 +1,24 @@
-user_name               (No. of names)    int
-body                    (100)             str
-created                 (100)             float
-created_utc             (100)             float
-distinguished           (100)             int?
-downs                   (100)             int
-edited                  (100)             bool
-gilded                  (100)             int
-has_fetched             (100)             bool
-id                      (100)             str
-json_dict               (100)             NOT SURE
-likes                   (100)             int
-link_author             (100)             str
-link_id                 (100)             str
-link_title              (100)             str
-link_url                (100)             str
-name                    (100)             str
-num_reports             (100)             int?
-parent_id               (100)             str
-saved                   (100)             bool
-score_hidden            (100)             bool
-subreddit.display_name  (100)             str
-subreddit_id            (100)             str
-ups                     (100)             str
+user_name                            int
+body                                 str
+created                              float
+created_utc                          float
+distinguished                        int?
+downs                                int
+edited                               bool
+gilded                               int
+has_fetched                          bool
+id                                   str
+json_dict                            NOT SURE
+likes                                int
+link_author                          str
+link_id                              str
+link_title                           str
+link_url                             str
+name                                 str
+num_reports                          int?
+parent_id                            str
+saved                                bool
+score_hidden                         bool
+subreddit.display_name               str
+subreddit_id                         str
+ups                                  str

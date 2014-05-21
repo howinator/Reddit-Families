@@ -10,4 +10,5 @@ gen = user.get_submitted(limit=thing_limit)
 karma_by_subreddit = {}
 for thing in gen:
   subreddit = thing.subreddit.display_name
-  karma_by_subreddit[subreddit]= (karma_by_subreddit.get(subreddit, 0) + thing.score)
+  karma_by_subreddit[subreddit]= (karma_by_subreddit.get(subreddit, 0) 
+                                  + thing.score)
