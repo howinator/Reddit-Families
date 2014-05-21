@@ -47,6 +47,42 @@ user_subs = dict()
 i = 0
 j = 0
 
+''' 
+Here the numpy array with all the info on the retrieved comments is
+instantiated. NOTE: every 100 entired will be of the same author.
+As far as I can tell, structured numpy arrays can't have one dimension that
+is of a different size. Info on structured arrays can be found here:
+http://docs.scipy.org/doc/numpy/user/basics.rec.html
+'''
+CommInfo = np.zeros((n*100,),dtype={'names':['user_name', 'body', 
+    'created', 'created_utc', 'distinguished', 'downs', 'edited', 
+    'gilded', 'id', 'likes', 'link_author', 'link_id', 'link_title',
+    'link_url', 'name', 'num_reports', 'parent_id', 
+    'subreddit_name', 'subreddit_id', 'ups'], 
+    'formats':['U20', 'U10000', 'f8', 'f8', 'i4', 'i4', 'b', 'i4', 'U12', 
+        'i4', 'U20', 'U12', 'U300', 'U200', 'U16', 'i4', 'U16', 'U100',
+        'U16', 'i4'
+  ]})
+NuUNa = CommInfo['user_name']
+NuBo = CommInfo['body']
+NuCr = CommInfo['created']
+NuCrU = CommInfo['created_utc']
+NuDi = CommInfo['distinguished']
+NuDo = CommInfo['downs']
+NuEd = CommInfo['edited']
+NuGi = CommInfo['gilded']
+NuId = CommInfo['id']
+NuLik = CommInfo['likes']
+NuLiA = CommInfo['link_author']
+NuLiI = CommInfo['link_id']
+NuLiT = CommInfo['link_title']
+NuLiU = CommInfo['link_url']
+NuNa = CommInfo['name']
+NuNu = CommInfo['num_reports']
+NuPa = CommInfo['parent_id']
+NuSuN = CommInfo['subreddit_name']
+NuSuI = CommInfo['subreddit_id']
+NuUp = CommInfo['ups']
 
 #generate dict of users and sets of subreddits
 for name in users[:n]:
@@ -63,6 +99,46 @@ for name in users[:n]:
         
         # 'distinguished', 'likes', 'num_reports' may be NoneTypes, so they
         # must be converted to int
+        '''
+        just commented this next part out to save running time while 
+         working on the graph.  We might consider throwing this in a
+        separate script 
+            -Sarang
+        '''
+        '''
+        ChDi = int(0 if comment.distinguished is None else 
+                comment.distinguished)
+        ChLi = int(0 if comment.likes is None else comment.likes)
+        ChNuR = int(0 if comment.num_reports is None else 
+                comment.num_reports)
+        # Here I populate the numpy array.
+        NuUNa[j] = name
+        NuBo[j] = comment.body
+        NuCr[j] = comment.created
+        NuCrU[j] = comment.created_utc
+        NuDi[j] = ChDi
+        NuDo[j] = comment.downs
+        NuEd[j] = comment.edited
+        NuGi[j] = comment.gilded
+        NuId[j] = comment.id
+        NuLik[j] = ChLi
+        NuLiA[j] = comment.link_author
+        NuLiI[j] = comment.link_id
+        NuLiT[j] = comment.link_title
+        NuLiU[j] = comment.link_url
+        NuNa[j] = comment.name
+        NuNu[j] = ChNuR
+        NuPa[j] = comment.parent_id
+        NuSuN[j] = comment.subreddit.display_name
+        NuSuI[j] = comment.subreddit_id
+        NuUp[j] = comment.ups
+        '''
+        j += 1
+<<<<<<< HEAD
+#print NuBo[:]
+=======
+np.save(numpy_saved, CommInfo)
+>>>>>>> 4617a06375b3ed29ac2d184881dbd816f6ae05cc
 #subs = set().union(*user_subs)
 #generate set of subreddits
 subs = set([])
