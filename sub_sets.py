@@ -25,6 +25,8 @@ u  = reader.read().split('\n')
 reader.close()
 
 users = ['' for i in xrange(len(u))]
+#subs = set().union(*user_subs)
+#generate set of subreddits
 
 
 for i in xrange(len(u)):
@@ -183,16 +185,26 @@ for i in xrange(len(sub_users.keys())):
 print np.array(sizes)
 print np.log(sizes)
 
+#Find indices corresponding to non-enormous subreddits
+ind = []
+for i in xrange(len(sizes)):
+    if sizes[i] < 10000000:
+       ind.append(i)
+
 #generate node labels for large subreddits
 labels = dict()  # ['' for i in xrange(len(sub_users.keys()))]
-for i in xrange(len(sub_users.keys())):
+for i in xrange(len(ind)):
     if sizes[i] >= 500000:
        labels[i] = sub_users.keys()[i]
-       
+    else:
+       labels[i] = ''
 
+small_A = A[ind,:][:,ind]
+print small_A
+print small_A.shape
 
 #draw graph from A
-G = nx.to_networkx_graph(A)
-nx.draw_spring(G,node_size = 100* np.log(.00001*sizes),width = .05,labels = labels,font_size = 8,linewidths = 0)
+G = nx.to_networkx_graph(small_A)
+nx.draw_spring(G,node_size = 100* np.log(.00001*sizes[ind]),width = .05,labels = labels,font_size = 8,linewidths = 0)
 plt.show()
 
