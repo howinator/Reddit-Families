@@ -29,7 +29,7 @@ users = ['' for i in xrange(len(u))]
 for i in xrange(len(u)):
     users[i] = u[i].strip()
         
-n = 100  #number of users to consider
+n = 9000  #number of users to consider
 
 print users[:n]
 
@@ -40,6 +40,7 @@ r = praw.Reddit(user_agent = user_name)
 user_subs = dict()
 i = 0
 k = 0
+m = 0
 
 #generate dict of users and sets of subreddits
 for name in users[:n]:
@@ -58,9 +59,9 @@ for name in users[:n]:
 
         cur.execute("DROP TABLE IF EXISTS Comments")
         cur.execute("""CREATE TABLE Comments (total_num INT, num_4_user INT, 
-            author TEXT, body TEXT, created REAL, 
-            created_utc REAL, distinguished INT, downs INT, edited INT, 
-            gilded INT, id TEXT, likes INT, link_author TEXT,  
+            user_num INT, author TEXT, body TEXT, created REAL, 
+            created_utc REAL, distinguished TEXT, downs INT, edited INT, 
+            gilded INT, id TEXT, likes TEXT, link_author TEXT,  
             link_id TEXT, link_title TEXT, link_url TEXT, name INT, 
             num_reports INT, parent_id TEXT, subreddit_name TEXT, 
             subreddit_id TEXT, ups INT)""")
@@ -70,13 +71,12 @@ for name in users[:n]:
             SBo = comment.body
             SCr = comment.created
             SCU = comment.created_utc
-            SDi = int(0 if comment.distinguished is None else 
-                      comment.distinguished)
+            SDi = comment.distinguished
             SDo = comment.downs
             SEd = int(0 if comment.edited is False else 1)
             SGi = comment.gilded
             SId = comment.id
-            SLi = int(0 if comment.likes is None else comment.likes)
+            SLi = comment.likes
             SLA = comment.link_author
             SLI = comment.link_id
             SLT = comment.link_title
@@ -90,13 +90,14 @@ for name in users[:n]:
             SUp = comment.ups
             #CommTup = (k ,j, name, SBo, SCr, SCU, SDi, SDo, SEd, SGi, SId, 
             #           SLi, SLA, SLI, SLT, SLU, SNa, SPI, SSDN, SSI, SUp)
-            cur.execute("""INSERT INTO Comments VALUES(?, ?, ?, ?, ?, 
+            cur.execute("""INSERT INTO Comments VALUES(?, ?, ?, ?, ?, ?, 
                  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", 
-                 (k, j, name, SBo, SCr, SCU, SDi, SDo, SEd, SGi, SId, SLi, SLA, 
+                 (k, j, m, name, SBo, SCr, SCU, SDi, SDo, SEd, SGi, SId, SLi, SLA, 
                   SLI, SLT, SLU, SNa, SNR, SPI, SSDN, SSI, SUp,))
             j += 1
             k += 1
         con.commit()
+        m += 1
     
     except lite.Error, e:
         
