@@ -8,9 +8,8 @@ import numpy as np
 import time
 import networkx as nx
 from matplotlib import pyplot as plt
-from tempfile import TemporaryFile
-
-numpy_saved = TemporaryFile()
+import sys
+import sqlite3 as lite
 
 #print repr(open('authors.csv','rb').read(200))
 '''
@@ -37,48 +36,10 @@ print users[:n]
 user_name = 'smoovewill'
 
 r = praw.Reddit(user_agent = user_name)
-
 #dictionarywuh users as keys and set of subreddits as values
 user_subs = dict()
 i = 0
-j = 0
-
-''' 
-Here the numpy array with all the info on the retrieved comments is
-instantiated. NOTE: every 100 entired will be of the same author.
-As far as I can tell, structured numpy arrays can't have one dimension that
-is of a different size. Info on structured arrays can be found here:
-http://docs.scipy.org/doc/numpy/user/basics.rec.html
-'''
-CommInfo = np.zeros((n*100,),dtype={'names':['user_name', 'body', 
-    'created', 'created_utc', 'distinguished', 'downs', 'edited', 
-    'gilded', 'id', 'likes', 'link_author', 'link_id', 'link_title',
-    'link_url', 'name', 'num_reports', 'parent_id', 
-    'subreddit_name', 'subreddit_id', 'ups'], 
-    'formats':['U20', 'U10000', 'f8', 'f8', 'i4', 'i4', 'b', 'i4', 'U12', 
-        'i4', 'U20', 'U12', 'U300', 'U200', 'U16', 'i4', 'U16', 'U100',
-        'U16', 'i4'
-  ]})
-NuUNa = CommInfo['user_name']
-NuBo = CommInfo['body']
-NuCr = CommInfo['created']
-NuCrU = CommInfo['created_utc']
-NuDi = CommInfo['distinguished']
-NuDo = CommInfo['downs']
-NuEd = CommInfo['edited']
-NuGi = CommInfo['gilded']
-NuId = CommInfo['id']
-NuLik = CommInfo['likes']
-NuLiA = CommInfo['link_author']
-NuLiI = CommInfo['link_id']
-NuLiT = CommInfo['link_title']
-NuLiU = CommInfo['link_url']
-NuNa = CommInfo['name']
-NuNu = CommInfo['num_reports']
-NuPa = CommInfo['parent_id']
-NuSuN = CommInfo['subreddit_name']
-NuSuI = CommInfo['subreddit_id']
-NuUp = CommInfo['ups']
+k = 0
 
 #generate dict of users and sets of subreddits
 for name in users[:n]:
@@ -90,48 +51,67 @@ for name in users[:n]:
     # before the loop was started. I also took out the sleep command
     # because I learned PRAW takes care of the API limit. -Howie
     comments = user.get_comments(limit = 100)
-    for comment in comments:
-        user_subs[name].add(comment.subreddit.display_name)
+    try:
+        con = lite.connect('redditdata.db')
         
-        # 'distinguished', 'likes', 'num_reports' may be NoneTypes, so they
-        # must be converted to int
-        '''
-        just commented this next part out to save running time while 
-         working on the graph.  We might consider throwing this in a
-        separate script 
-            -Sarang
-        '''
-        '''
-        ChDi = int(0 if comment.distinguished is None else 
-                comment.distinguished)
-        ChLi = int(0 if comment.likes is None else comment.likes)
-        ChNuR = int(0 if comment.num_reports is None else 
-                comment.num_reports)
-        # Here I populate the numpy array.
-        NuUNa[j] = name
-        NuBo[j] = comment.body
-        NuCr[j] = comment.created
-        NuCrU[j] = comment.created_utc
-        NuDi[j] = ChDi
-        NuDo[j] = comment.downs
-        NuEd[j] = comment.edited
-        NuGi[j] = comment.gilded
-        NuId[j] = comment.id
-        NuLik[j] = ChLi
-        NuLiA[j] = comment.link_author
-        NuLiI[j] = comment.link_id
-        NuLiT[j] = comment.link_title
-        NuLiU[j] = comment.link_url
-        NuNa[j] = comment.name
-        NuNu[j] = ChNuR
-        NuPa[j] = comment.parent_id
-        NuSuN[j] = comment.subreddit.display_name
-        NuSuI[j] = comment.subreddit_id
-        NuUp[j] = comment.ups
-        '''
-        j += 1
+        cur = con.cursor()
 
+        cur.execute("DROP TABLE IF EXISTS Comments")
+        cur.execute("""CREATE TABLE Comments (total_num INT, num_4_user INT, 
+            author TEXT, body TEXT, created REAL, 
+            created_utc REAL, distinguished INT, downs INT, edited INT, 
+            gilded INT, id TEXT, likes INT, link_author TEXT,  
+            link_id TEXT, link_title TEXT, link_url TEXT, name INT, 
+            num_reports INT, parent_id TEXT, subreddit_name TEXT, 
+            subreddit_id TEXT, ups INT)""")
+        j = 0
+        for comment in comments:
+            user_subs[name].add(comment.subreddit.display_name)
+            SBo = comment.body
+            SCr = comment.created
+            SCU = comment.created_utc
+            SDi = int(0 if comment.distinguished is None else 
+                      comment.distinguished)
+            SDo = comment.downs
+            SEd = int(0 if comment.edited is False else 1)
+            SGi = comment.gilded
+            SId = comment.id
+            SLi = int(0 if comment.likes is None else comment.likes)
+            SLA = comment.link_author
+            SLI = comment.link_id
+            SLT = comment.link_title
+            SLU = comment.link_url
+            SNa = comment.name
+            SNR = int(0 if comment.num_reports is None else 
+                      comment.num_reports)
+            SPI = comment.parent_id
+            SSDN = comment.subreddit.display_name
+            SSI = comment.subreddit_id
+            SUp = comment.ups
+            #CommTup = (k ,j, name, SBo, SCr, SCU, SDi, SDo, SEd, SGi, SId, 
+            #           SLi, SLA, SLI, SLT, SLU, SNa, SPI, SSDN, SSI, SUp)
+            cur.execute("""INSERT INTO Comments VALUES(?, ?, ?, ?, ?, 
+                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", 
+                 (k, j, name, SBo, SCr, SCU, SDi, SDo, SEd, SGi, SId, SLi, SLA, 
+                  SLI, SLT, SLU, SNa, SNR, SPI, SSDN, SSI, SUp,))
+            j += 1
+            k += 1
+        con.commit()
+    
+    except lite.Error, e:
+        
+        if con:
+            con.rollback()
+        print "Error: %s. Table not made for user: %s" % (e.args[0], user)
+        sys.exit(1)
+    finally:
 
+        if con:
+            con.close()
+'''
+#subs = set().union(*user_subs)
+#generate set of subreddits
+>>>>>>> Howie
 subs = set([])
 for name in user_subs.keys():
     subs |= user_subs[name]
@@ -162,11 +142,11 @@ print 'max weight is', np.amax(A)
 
 
 #generate node sizes based on subreddit sizes
-'''
+
 sizes = np.zeros(len(sub_users.keys()))
 for i in xrange(len(sub_users.keys())):
     sizes[i] = r.get_subreddit(sub_users.keys()[i]).subscribers
-'''
+
 #put subreddits with sizes in dictionary
 reader = csv.reader(open('sub_sizes.csv','rb'))
 sub_sizes = dict(x for x in reader)
@@ -195,4 +175,4 @@ for i in xrange(len(sub_users.keys())):
 G = nx.to_networkx_graph(A)
 nx.draw_spring(G,node_size = 100* np.log(.00001*sizes),width = .05,labels = labels,font_size = 8,linewidths = 0)
 plt.show()
-
+'''
