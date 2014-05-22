@@ -20,7 +20,7 @@ with open("unique_copy.csv","rb") as f:
 '''
 
 
-reader = open("authors.csv","r")
+reader = open("unique_authors.csv","r")
 u  = reader.read().split('\n')
 reader.close()
 
@@ -30,11 +30,7 @@ users = ['' for i in xrange(len(u))]
 for i in xrange(len(u)):
     users[i] = u[i].strip()
         
-<<<<<<< HEAD
-n = 10  #number of users to consider
-=======
-n = 8000  #number of users to consider
->>>>>>> 4617a06375b3ed29ac2d184881dbd816f6ae05cc
+n = 100  #number of users to consider
 
 print users[:n]
 
@@ -134,13 +130,8 @@ for name in users[:n]:
         NuUp[j] = comment.ups
         '''
         j += 1
-<<<<<<< HEAD
-#print NuBo[:]
-=======
-np.save(numpy_saved, CommInfo)
->>>>>>> 4617a06375b3ed29ac2d184881dbd816f6ae05cc
-#subs = set().union(*user_subs)
-#generate set of subreddits
+
+
 subs = set([])
 for name in user_subs.keys():
     subs |= user_subs[name]
@@ -171,17 +162,31 @@ print 'max weight is', np.amax(A)
 
 
 #generate node sizes based on subreddit sizes
+'''
 sizes = np.zeros(len(sub_users.keys()))
 for i in xrange(len(sub_users.keys())):
     sizes[i] = r.get_subreddit(sub_users.keys()[i]).subscribers
+'''
+#put subreddits with sizes in dictionary
+reader = csv.reader(open('sub_sizes.csv','rb'))
+sub_sizes = dict(x for x in reader)
+print sub_sizes
+
+#generate sizes for subs in graph
+sizes = np.zeros(len(sub_users.keys()))
+for i in xrange(len(sub_users.keys())):
+    if sub_users.keys()[i] in sub_sizes.keys():
+       sizes[i] = sub_sizes[sub_users.keys()[i]]
+    else:
+       sizes[i] = r.get_subreddit(sub_users.keys()[i]).subscribers
 
 print np.array(sizes)
-print 10* np.log(.01*sizes)
+print np.log(sizes)
 
 #generate node labels for large subreddits
 labels = dict()  # ['' for i in xrange(len(sub_users.keys()))]
 for i in xrange(len(sub_users.keys())):
-    if sizes[i] >= 1000000:
+    if sizes[i] >= 500000:
        labels[i] = sub_users.keys()[i]
        
 
