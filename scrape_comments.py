@@ -20,8 +20,6 @@ k = 0
 # This is just to find the starting point for the script.
 m = NUsersStart
 
-# This is just to convert the values in each tuple into strings in a list.
-users = [str(i[0]) for i in authors]
 print users
 
 for name in users:
