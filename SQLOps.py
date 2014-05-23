@@ -85,7 +85,7 @@ class SQLClass(object):
 
             names = rows[start:stop]
         nameslist = [str(i[0]) for i in names]
-        return names
+        return nameslist
 
 
 
