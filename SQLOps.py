@@ -4,17 +4,15 @@
 
 import sqlite3 as lite
 
-class SQLOps(object):
+class SQLClass(object):
 
     def __init__(self):
         """ Re-sets return tuple to empty tuple and connects to database
         and makes cursor object for database. """
 
-        self.data = ()
-        con = lite.connect('redditdata.db')
-        cur = con.cursor
+        self.data = []
 
-    def add_comm_row(self, ToNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, 
+    def add_comm_row(self, ToNu, CUNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, 
             Ed, Gi, Id, Li, LA, LI, LT, LU, Na, NR, PI, SDN, SI, Up):
         """ Adds all usable attributes from single comment returned from
         (PRAW) user.get_comments to the database. THis function must be
@@ -22,8 +20,9 @@ class SQLOps(object):
 
         Keyword arguments:
         self -- instantiates object
-        ToNu -- The total number for this comment (0 to total_authors*100)
-        UsNu -- The comment number for this user (0 to 99)
+        ToNu -- The total number for this comment (0 to total_users*100)
+        CUNu -- The comment number for this user (0 to 99)
+        UsNu -- The position of the user in UserNames table (0 to total_users)
         UsNa -- The user_name for the author of it (text)
         Bo -- The text body of it (comment.body)
         Cr -- The time it was created (comment.created)
@@ -48,11 +47,15 @@ class SQLOps(object):
         Up -- Number of upvotes for it (comment.ups) """
 
         try:
+
+            con = lite.connect('redditdata.db')
+            cur = con.cursor()
+
             Ed = int(0 if Ed is False else 1)
             NR = int(0 if NR is None else NR)
             cur.execute("""INSERT INTO Comments VALUES(?, ?, ?, ?, ?, ?, 
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                (ToNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, Ed, Gi, Id, Li, 
+                (ToNu, CUNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, Ed, Gi, Id, Li, 
                  LA, LI, LT, LU, Na, NR, PI, SDN, SI, Up,))
             con.commit()
         except lite.Error, e:
@@ -66,6 +69,23 @@ class SQLOps(object):
 
             if con:
                 con.close()
+
+    def get_usernames(self, n):
+        """ This function gets n number of usernames and returns a list
+        of said usernames. """
+        
+        con = lite.connect('redditdata.db')
+
+        with con:
+            
+            cur = con.cursor()
+            cur.execute("SELECT * FROM UserNames")
+
+            rows = cur.fetchall()
+
+            names = rows[:n]
+        return names
+
 
 
 
