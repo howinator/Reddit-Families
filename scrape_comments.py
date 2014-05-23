@@ -8,17 +8,22 @@ agent = 'Comment scraping script by /u/howinator'
 
 r = praw.Reddit(user_agent = agent)
 
-NuOfUsers = 100
+NUsersStart = 100
+NUsersStop = 200
 
 sql = SQLOps.SQLClass()
 
-users = sql.get_usernames(NuOfUsers)
+authors = sql.get_usernames(NUsersStart, NUsersStop)
 
 i = 0
 k = 0
 # This is just to find the starting point for the script.
-m = min(range(NuOfUsers))
+m = NUsersStart
+
+# This is just to convert the values in each tuple into strings in a list.
+users = [str(i[0]) for i in authors]
 print users
+
 for name in users:
     print m
 
@@ -38,4 +43,4 @@ for name in users:
         
         j += 1
         k += 1
-    m+=1
+    m += 1

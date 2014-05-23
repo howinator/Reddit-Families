@@ -70,7 +70,7 @@ class SQLClass(object):
             if con:
                 con.close()
 
-    def get_usernames(self, n):
+    def get_usernames(self, start, stop):
         """ This function gets n number of usernames and returns a list
         of said usernames. """
         
@@ -83,7 +83,7 @@ class SQLClass(object):
 
             rows = cur.fetchall()
 
-            names = rows[:n]
+            names = rows[start:stop]
         return names
 
 
