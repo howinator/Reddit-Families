@@ -20,7 +20,7 @@ k = 0
 # This is just to find the starting point for the script.
 m = NUsersStart
 
-# This is just to convert the values in each tuple into strings in a list.
+print users
 
 
 

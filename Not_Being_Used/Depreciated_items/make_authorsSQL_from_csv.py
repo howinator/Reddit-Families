@@ -14,11 +14,16 @@ for i in xrange(len(u)):
 con = lite.connect('redditdata.db')
 cur = con.cursor()
 cur.execute("DROP TABLE IF EXISTS UserNames")
-cur.execute("CREATE TABLE UserNames (user_name TEXT)")
+cur.execute("CREATE TABLE UserNames (user_number INT, user_name TEXT)")
+
+j = 0
 
 for user in users:
-    un = (user,)
-    cur.execute("""INSERT INTO UserNames VALUES(?)""", un)
+    inp = (j, user,)
+
+    cur.execute("""INSERT INTO UserNames VALUES(?, ?)""", inp)
+    
+    j += 1
 
 con.commit()
 con.close()
