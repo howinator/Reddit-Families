@@ -8,7 +8,7 @@ agent = 'Comment scraping script by /u/howinator'
 
 r = praw.Reddit(user_agent = agent)
 
-NUsersStart = 1332
+NUsersStart = 1617
 NUsersStop = 20000
 
 sql = SQLOps.SQLClass()
@@ -19,6 +19,10 @@ i = 0
 k = 0
 # This is just to find the starting point for the script.
 m = NUsersStart
+
+
+# fix this later.
+users = authors
 
 print users
 

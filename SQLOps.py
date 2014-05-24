@@ -79,7 +79,7 @@ class SQLClass(object):
         with con:
             
             cur = con.cursor()
-            cur.execute("SELECT * FROM UserNames")
+            cur.execute("SELECT user_name FROM UserNames")
 
             rows = cur.fetchall()
 
