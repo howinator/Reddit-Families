@@ -2,10 +2,7 @@
  database. If a new table or new operation needs to be implemented, make
  it as a new function in the class. """
 
-import MySQLdb as mdb
-import sys
-import csv
-from urllib import urlopen
+import sqlite3 as lite
 
 class SQLClass(object):
 
@@ -15,7 +12,7 @@ class SQLClass(object):
 
         self.data = []
 
-    def add_comm_row(self, CUNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, 
+    def add_comm_row(self, ToNu, CUNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, 
             Ed, Gi, Id, Li, LA, LI, LT, LU, Na, NR, PI, SDN, SI, Up):
         """ Adds all usable attributes from single comment returned from
         (PRAW) user.get_comments to the database. THis function must be
@@ -23,6 +20,7 @@ class SQLClass(object):
 
         Keyword arguments:
         self -- instantiates object
+        ToNu -- The total number for this comment (0 to total_users*100)
         CUNu -- The comment number for this user (0 to 99)
         UsNu -- The position of the user in UserNames table (0 to total_users)
         UsNa -- The user_name for the author of it (text)
@@ -47,39 +45,26 @@ class SQLClass(object):
         SI -- id string for subreddit it was posted in 
                 (comment.subreddit_id)
         Up -- Number of upvotes for it (comment.ups) """
-        
-        # This snippet reads passwords from a csv.
-        reader = open("mysqlargs.csv")
-        passw = reader.read().split('\n')
-        reader.close
-
-        mypass = passw[1]
 
         try:
 
-            con = mdb.connect('localhost', 'howieadmin', mypass, 'redditdata');
-            # These two lines just release password sensitive data from memory.
-            mypass = None
-            passw = None
+            con = lite.connect('redditdata.db')
             cur = con.cursor()
 
+            Ed = int(0 if Ed is False else 1)
             NR = int(0 if NR is None else NR)
-            cur.execute("""INSERT INTO Comments
-                (num_4_user, user_num, author, body, created, created_utc, 
-                distinguished, downs, edited, gilded, id, likes, link_author, 
-                link_id, link_title, link_url, name, num_reports, parent_id, 
-                subreddit_name, subreddit_id, ups) 
-                VALUES
-                (CUNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, Ed, Gi, Id, Li, 
-                 LA, LI, LT, LU, Na, NR, PI, SDN, SI, Up,)""")
+            cur.execute("""INSERT INTO Comments VALUES(?, ?, ?, ?, ?, ?, 
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (ToNu, CUNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, Ed, Gi, Id, Li, 
+                 LA, LI, LT, LU, Na, NR, PI, SDN, SI, Up,))
             con.commit()
         except lite.Error, e:
 
             if con:
                 con.rollback()
 
-            print "Error %d: %s. Row not made for comment No: %s, User: %s" % (
-                    e.args[0], e.args[1], ToNu, UsNa)
+            print "Error %s. Row not made for comment No: %s, User: %s" % (
+                    e.args[0], ToNu, UsNa)
         finally:
 
             if con:
@@ -88,22 +73,13 @@ class SQLClass(object):
     def get_usernames(self, start, stop):
         """ This function gets n number of usernames and returns a list
         of said usernames. """
+        
+        con = lite.connect('redditdata.db')
 
-        reader = open("mysqlargs.csv")
-        passw = reader.read().split('\n')
-        reader.close()
-
-        mypass = passw[0]
-
-        con = mdb.connect(host='howinator.homelinux.com', port=41060,user='howie',  
-                passwd=mypass, db='redditdata');
-
-        passw = None
-        mypass = None
         with con:
             
             cur = con.cursor()
-            cur.execute("SELECT user_name FROM UserNames")
+            cur.execute("SELECT * FROM UserNames")
 
             rows = cur.fetchall()
 
@@ -117,7 +93,7 @@ class SQLClass(object):
         con = lite.connect('redditdata.db')
         cur = con.cursor()
         
-        cur.execute('SELECT SDN FROM Comments WHERE UsNa = ?', (name,))
+        cur.execute('SELECT subreddit_name FROM Comments WHERE author = ?', (name,))
         subs = cur.fetchall()
         return subs
 
