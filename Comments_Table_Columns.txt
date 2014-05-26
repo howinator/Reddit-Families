@@ -18,6 +18,6 @@ link_url          TEXT
 name              INT
 num_reports       INT
 parent_id         TEXT
-subredd-t_name    TEXT
+subreddit_name    TEXT
 subreddit_id      TEXT
 ups               INT
