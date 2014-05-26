@@ -10,7 +10,7 @@ downs             INT
 edited            INT
 gilded            INT
 id                TEXT
-likes             TEXT
+likes             INT
 link_author       TEXT
 link_id           TEXT
 link_title        TEXT
