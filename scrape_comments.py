@@ -8,12 +8,12 @@ agent = 'Comment scraping script by /u/howinator'
 
 r = praw.Reddit(user_agent = agent)
 
-NUsersStart = 1332
-NUsersStop = 20000
+NUsersStart = 0
+NUsersStop = 16000
 
 sql = SQLOps.SQLClass()
 
-authors = sql.get_usernames(NUsersStart, NUsersStop)
+users = sql.get_usernames(NUsersStart, NUsersStop)
 
 i = 0
 k = 0

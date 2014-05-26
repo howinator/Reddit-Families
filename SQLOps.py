@@ -2,7 +2,9 @@
  database. If a new table or new operation needs to be implemented, make
  it as a new function in the class. """
 
-import sqlite3 as lite
+import MySQLdb as mdb
+import sys
+import csv
 
 class SQLClass(object):
 
@@ -45,26 +47,34 @@ class SQLClass(object):
         SI -- id string for subreddit it was posted in 
                 (comment.subreddit_id)
         Up -- Number of upvotes for it (comment.ups) """
+        
+        reader = open("mysqlargs.csv")
+        passw = reader.read().split('\n')
+        reader.close
+
+        mypass = passw[1]
 
         try:
 
-            con = lite.connect('redditdata.db')
+            con = mdb.connect('localhost', 'howieadmin', mypass,  'redditdata');
             cur = con.cursor()
 
-            Ed = int(0 if Ed is False else 1)
             NR = int(0 if NR is None else NR)
-            cur.execute("""INSERT INTO Comments VALUES(?, ?, ?, ?, ?, ?, 
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            cur.execute("""INSERT INTO Comments
+                (num_4_user, user_num, author, body, created, created_utc, 
+                distinguished, downs, edited, gilded, id, likes, link_author, 
+                link_id, link_title, link_url, name, num_reports, parent_id, 
+                subreddit_name, subreddit_id, ups) 
+                VALUES
                 (ToNu, CUNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, Ed, Gi, Id, Li, 
-                 LA, LI, LT, LU, Na, NR, PI, SDN, SI, Up,))
-            con.commit()
+                 LA, LI, LT, LU, Na, NR, PI, SDN, SI, Up,)""")
         except lite.Error, e:
 
             if con:
                 con.rollback()
 
-            print "Error %s. Row not made for comment No: %s, User: %s" % (
-                    e.args[0], ToNu, UsNa)
+            print "Error %d: %s. Row not made for comment No: %s, User: %s" % (
+                    e.args[0], e.args[1], ToNu, UsNa)
         finally:
 
             if con:
@@ -73,13 +83,19 @@ class SQLClass(object):
     def get_usernames(self, start, stop):
         """ This function gets n number of usernames and returns a list
         of said usernames. """
+
+        reader = open("mysqlargs.csv")
+        passw = reader.read().split('\n')
+        reader.close()
+
+        mypass = passw[0]
         
-        con = lite.connect('redditdata.db')
+        con = mdb.connect('66.90.167.236', 'howie', mypass, 'redditdata');
 
         with con:
             
             cur = con.cursor()
-            cur.execute("SELECT * FROM UserNames")
+            cur.execute("SELECT user_name FROM UserNames")
 
             rows = cur.fetchall()
 
