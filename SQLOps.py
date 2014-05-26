@@ -87,7 +87,15 @@ class SQLClass(object):
         nameslist = [str(i[0]) for i in names]
         return nameslist
 
-
+    def get_comment_subs(self,name):
+        """Get set of subreddits a particular user has commented in"""
+        
+        con = lite.connect('redditdata.db')
+        cur = con.cursor()
+        
+        cur.execute('SELECT SDN FROM Comments WHERE UsNa = ?', (name,))
+        subs = cur.fetchall()
+        return subs
 
 
 
