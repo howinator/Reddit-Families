@@ -2,10 +2,11 @@
  database. If a new table or new operation needs to be implemented, make
  it as a new function in the class. """
 
+# -*- coding: UTF-8 -*-
+
 import MySQLdb as mdb
 import sys
 import csv
-from urllib import urlopen
 
 class SQLClass(object):
 
@@ -54,32 +55,53 @@ class SQLClass(object):
         reader.close
 
         mypass = passw[1]
+        """
+        UsNa.encode('latin-1', 'replace')
+        Bo.encode('latin-1', 'replace')
+        Id.encode('latin-1', 'replace')
+        LA.encode('latin-1', 'replace')
+        LI.encode('latin-1', 'replace')
+        LT.encode('latin-1', 'replace')
+        LU.encode('latin-1', 'replace')
+        Na.encode('latin-1', 'replace')
+        PI.encode('latin-1', 'replace')
+        SDN.encode('latin-1', 'replace')
+        SI.encode('latin-1', 'replace')
+        """
+        Ed = int(0 if Ed is False else 1)
+        NR = int(0 if NR is None else NR)
 
         try:
 
             con = mdb.connect('localhost', 'howieadmin', mypass, 'redditdata');
             # These two lines just release password sensitive data from memory.
+            con.set_character_set('utf8')
             mypass = None
             passw = None
             cur = con.cursor()
+            cur.execute('SET NAMES utf8;')
+            cur.execute('SET CHARACTER SET utf8;')
+            cur.execute('SET character_set_connection=utf8;')
 
+            
             NR = int(0 if NR is None else NR)
             cur.execute("""INSERT INTO Comments
                 (num_4_user, user_num, author, body, created, created_utc, 
                 distinguished, downs, edited, gilded, id, likes, link_author, 
                 link_id, link_title, link_url, name, num_reports, parent_id, 
                 subreddit_name, subreddit_id, ups) 
-                VALUES
-                (CUNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, Ed, Gi, Id, Li, 
-                 LA, LI, LT, LU, Na, NR, PI, SDN, SI, Up,)""")
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+                %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (CUNu, UsNu, UsNa, Bo, 
+                    Cr, CU, Di, Do, Ed, Gi, Id, Li, LA, LI, LT, LU, Na, NR, 
+                    PI, SDN, SI, Up))
             con.commit()
-        except lite.Error, e:
+        except mdb.Error, e:
 
             if con:
                 con.rollback()
 
-            print "Error %d: %s. Row not made for comment No: %s, User: %s" % (
-                    e.args[0], e.args[1], ToNu, UsNa)
+            print "Error %d: %s. Row not made User: %s" % (
+                    e.args[0], e.args[1], UsNa)
         finally:
 
             if con:

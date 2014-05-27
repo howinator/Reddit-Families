@@ -3,12 +3,14 @@ import praw
 import time
 import sys
 
+# -*- coding: UTF-8 -*-
+
 agent = 'Comment scraping script by /u/howinator'
 
 r = praw.Reddit(user_agent = agent)
 
-NUsersStart = 0
-NUsersStop = 16000
+NUsersStart = 10
+NUsersStop = 15000
 
 sql = SQLOps.SQLClass()
 
