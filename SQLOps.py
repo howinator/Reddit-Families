@@ -55,19 +55,6 @@ class SQLClass(object):
         reader.close
 
         mypass = passw[1]
-        """
-        UsNa.encode('latin-1', 'replace')
-        Bo.encode('latin-1', 'replace')
-        Id.encode('latin-1', 'replace')
-        LA.encode('latin-1', 'replace')
-        LI.encode('latin-1', 'replace')
-        LT.encode('latin-1', 'replace')
-        LU.encode('latin-1', 'replace')
-        Na.encode('latin-1', 'replace')
-        PI.encode('latin-1', 'replace')
-        SDN.encode('latin-1', 'replace')
-        SI.encode('latin-1', 'replace')
-        """
         Ed = int(0 if Ed is False else 1)
         NR = int(0 if NR is None else NR)
 
