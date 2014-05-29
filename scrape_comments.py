@@ -9,8 +9,8 @@ agent = 'Comment scraping script by /u/howinator'
 
 r = praw.Reddit(user_agent = agent)
 
-NUsersStart = 3038
-NUsersStop = 25000
+NUsersStart = 25001
+NUsersStop = 30000
 
 sql = SQLOps.SQLClass()
 
