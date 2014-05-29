@@ -17,7 +17,7 @@ class SQLWrite(object):
         self.data = []
 
     def __enter__(self):
-
+        self.con = mdb.connect(
 
     def add_comm_row(self, CUNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, 
             Ed, Gi, Id, Li, LA, LI, LT, LU, Na, NR, PI, SDN, SI, Up):
