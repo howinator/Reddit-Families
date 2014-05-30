@@ -7,13 +7,13 @@ import sys
 import csv
 from urllib import urlopen
 
-class SQLClass(object):
+class write_SQL(object):
 
     def __init__(self):
         """ Re-sets return tuple to empty tuple and connects to database
         and makes cursor object for database. """
-
         self.data = []
+        
 
     def add_comm_row(self, CUNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, 
             Ed, Gi, Id, Li, LA, LI, LT, LU, Na, NR, PI, SDN, SI, Up):
@@ -84,34 +84,71 @@ class SQLClass(object):
 
             if con:
                 con.close()
+    
+   
+   
+   
+   
+class read_SQL(object):
+    def __init__(self):
+        self.status = 'closed'
 
-    def get_usernames(self, start, stop):
-        """ This function gets n number of usernames and returns a list
-        of said usernames. """
-
-        reader = open("mysqlargs.csv")
+    def open(self):
+        reader = open('mysqlargs.csv')
         passw = reader.read().split('\n')
         reader.close()
 
         mypass = passw[0]
-
-        con = mdb.connect(host='howinator.homelinux.com', port=41060,user='howie',  
-                passwd=mypass, db='redditdata');
-
+        self.con = mdb.connect(host='howinator.homelinux.com',port=41060,user = 'howie',passwd = mypass,db='redditdata')
         passw = None
         mypass = None
-        with con:
+        self.status = 'open'
+
+    def close(self):
+        self.con.close()
+        self.status = 'closed'
+        
+    def get_usernames(self, start, stop):
+        """ This function gets n number of usernames and returns a list
+        of said usernames. """
+
+        
             
-            cur = con.cursor()
-            cur.execute("SELECT user_name FROM UserNames")
+        cur = self.con.cursor()
+        cur.execute("SELECT user_name FROM UserNames")
 
-            rows = cur.fetchall()
+        rows = cur.fetchall()
 
-            names = rows[start:stop]
+        names = rows[start:stop]
         nameslist = [str(i[0]) for i in names]
         return nameslist
+    
+    def get_usersubs(self,name):
+            
+        cur = self.con.cursor()
+        cur.execute("SELECT subreddit_name FROM Comments WHERE author = %s",(name,))
+        subs = cur.fetchall()
+        
+        sub_list = [i[0] for i in subs]
+        return set(sub_list)
+    
+    def get_info(self):
+        cur = self.con.cursor()
+        cur.execute("SHOW TABLES")
+
+        cur.execute("SHOW COLUMNS FROM Comments")
+        return cur.fetchall()
+    
+    def __enter__(self):
+        self.open()
+        return self
+
+    def __exit__(self,type,value,tb):
+        self.close()
 
 
+ 
 
+ 
 
 
