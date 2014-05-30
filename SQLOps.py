@@ -130,7 +130,7 @@ class read_SQL(object):
         subs = cur.fetchall()
         
         sub_list = [i[0] for i in subs]
-        return set(sub_list)
+        return sub_list
     
     def get_info(self):
         cur = self.con.cursor()
