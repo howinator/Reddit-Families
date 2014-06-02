@@ -8,16 +8,76 @@ import MySQLdb as mdb
 import sys
 import csv
 
-class write_SQL(object):
+class SQLOps(object):
+    """ This class is to streamline all the operations to be done on the SQL
+    database. Each new operation on the database should be implemented as a 
+    new method. """
 
     def __init__(self):
-        """ Re-sets return tuple to empty tuple and connects to database
-        and makes cursor object for database. """
-        self.data = []
-        
+        """ Re-sets the connection to the closed state"""
+        self.status = 'closed'
 
     def __enter__(self):
-        self.con = mdb.connect(
+        """This method enables the use of a with statement by calling open. """
+        self.open()
+        return self
+
+    def __exit__(self, type, value, tb):
+        """This method handles errors by calling close. """
+        self.close()
+    
+    def open(self):
+        """This method reads the password for the database and then makes 
+        the connection. """
+        reader = open('mysqlargs.csv')
+        passw = reader.read().split('\n')
+        reader.close()
+        mypass = passw[0]
+        self.con = mdb.connect(host="mysql.computationalthings.com", 
+                user="howieadmin", passwd = mypass, db="redditdata")
+        passw = None
+        mypass = None
+        self.con.set_character_set('utf8')
+        self.status = "open"
+
+    def close(self):
+        " Simply calls the MySQLdb close method to close connection. "
+        self.con.close()
+        self.status = "closed"
+
+    def get_usernames(self, start, stop):
+        """Gets (stop-start) number of usernames and returns list."""
+        cur = self.con.cursor()
+        cur.execute("SELECT user_name FROM UserNames")
+
+        rows = cur.fetchall()
+
+        names = rows[start:stop]
+        # This next line converts the list of singular tuples into a list of
+        # strings.
+        nameslist = [str(i[0]) for i in names]
+        return nameslist
+
+    def get_usersubs(self, name):
+        """Gets subreddit names when the author matches the name parameter."""
+        cur = self.con.cursor()
+        cur.execute("SELECT subreddit_name FROM Comments WHERE author = %s",
+                (name,))
+        subs = cur.fetchall()
+
+        # Again converts tuple into string.
+        sub_list = [i[0] for i in subs]
+        return sub_list
+
+    def get_info(self):
+        """ Gets info about the tables. """
+        cur.self.con.cursor()
+        cur.execute("SHOW TABLES")
+
+        cur.execute("SHOW COLUMNS FROM Comments")
+        return cur.fetchall()
+
+
 
     def add_comm_row(self, CUNu, UsNu, UsNa, Bo, Cr, CU, Di, Do, 
             Ed, Gi, Id, Li, LA, LI, LT, LU, Na, NR, PI, SDN, SI, Up):
@@ -51,24 +111,10 @@ class write_SQL(object):
         SI -- id string for subreddit it was posted in 
                 (comment.subreddit_id)
         Up -- Number of upvotes for it (comment.ups) """
-        
-        # This snippet reads passwords from a csv.
-        reader = open("mysqlargs.csv")
-        passw = reader.read().split('\n')
-        reader.close
-
-        mypass = passw[1]
-        Ed = int(0 if Ed is False else 1)
-        NR = int(0 if NR is None else NR)
 
         try:
 
-            con = mdb.connect('localhost', 'howieadmin', mypass, 'redditdata');
-            # These two lines just release password sensitive data from memory.
-            con.set_character_set('utf8')
-            mypass = None
-            passw = None
-            cur = con.cursor()
+            cur = self.con.cursor()
             cur.execute('SET NAMES utf8;')
             cur.execute('SET CHARACTER SET utf8;')
             cur.execute('SET character_set_connection=utf8;')
@@ -96,71 +142,6 @@ class write_SQL(object):
 
             if con:
                 con.close()
-    
    
    
-   
-   
-class read_SQL(object):
-    def __init__(self):
-        self.status = 'closed'
-
-    def open(self):
-        reader = open('mysqlargs.csv')
-        passw = reader.read().split('\n')
-        reader.close()
-
-        mypass = passw[0]
-        self.con = mdb.connect(host='howinator.homelinux.com',port=41060,user = 'howie',passwd = mypass,db='redditdata')
-        passw = None
-        mypass = None
-        self.status = 'open'
-
-    def close(self):
-        self.con.close()
-        self.status = 'closed'
-        
-    def get_usernames(self, start, stop):
-        """ This function gets n number of usernames and returns a list
-        of said usernames. """
-
-        
-            
-        cur = self.con.cursor()
-        cur.execute("SELECT user_name FROM UserNames")
-
-        rows = cur.fetchall()
-
-        names = rows[start:stop]
-        nameslist = [str(i[0]) for i in names]
-        return nameslist
-    
-    def get_usersubs(self,name):
-            
-        cur = self.con.cursor()
-        cur.execute("SELECT subreddit_name FROM Comments WHERE author = %s",(name,))
-        subs = cur.fetchall()
-        
-        sub_list = [i[0] for i in subs]
-        return sub_list
-    
-    def get_info(self):
-        cur = self.con.cursor()
-        cur.execute("SHOW TABLES")
-
-        cur.execute("SHOW COLUMNS FROM Comments")
-        return cur.fetchall()
-    
-    def __enter__(self):
-        self.open()
-        return self
-
-    def __exit__(self,type,value,tb):
-        self.close()
-
-
- 
-
- 
-
 
