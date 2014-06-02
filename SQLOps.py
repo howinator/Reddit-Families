@@ -8,11 +8,7 @@ import MySQLdb as mdb
 import sys
 import csv
 
-<<<<<<< HEAD
-class SQLWrite(object):
-=======
 class write_SQL(object):
->>>>>>> master
 
     def __init__(self):
         """ Re-sets return tuple to empty tuple and connects to database
