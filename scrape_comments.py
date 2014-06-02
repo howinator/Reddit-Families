@@ -1,4 +1,4 @@
-import SQLOps
+import RedFams
 import praw
 import time
 import sys
@@ -9,10 +9,10 @@ agent = 'Comment scraping script by /u/howinator'
 
 r = praw.Reddit(user_agent = agent)
 
-NUsersStart = 25001
+NUsersStart = 25087
 NUsersStop = 30000
 
-sql = SQLOps.SQLClass()
+sql = RedFams.write_SQL()
 
 users = sql.get_usernames(NUsersStart, NUsersStop)
 
