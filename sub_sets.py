@@ -99,7 +99,7 @@ for name in users[:n]:
             j += 1
             k += 1
         con.commit()
-        m += 1
+ub       m += 1
     
     except lite.Error, e:
         
