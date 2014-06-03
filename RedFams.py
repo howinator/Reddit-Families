@@ -112,36 +112,22 @@ class SQLOps(object):
                 (comment.subreddit_id)
         Up -- Number of upvotes for it (comment.ups) """
 
-        try:
 
-            cur = self.con.cursor()
-            cur.execute('SET NAMES utf8;')
-            cur.execute('SET CHARACTER SET utf8;')
-            cur.execute('SET character_set_connection=utf8;')
+        cur = self.con.cursor()
+        cur.execute('SET NAMES utf8;')
+        cur.execute('SET CHARACTER SET utf8;')
+        cur.execute('SET character_set_connection=utf8;')
 
             
-            NR = int(0 if NR is None else NR)
-            cur.execute("""INSERT INTO Comments
-                (num_4_user, user_num, author, body, created, created_utc, 
-                distinguished, downs, edited, gilded, id, likes, link_author, 
-                link_id, link_title, link_url, name, num_reports, parent_id, 
-                subreddit_name, subreddit_id, ups) 
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
-                %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (CUNu, UsNu, UsNa, Bo, 
-                    Cr, CU, Di, Do, Ed, Gi, Id, Li, LA, LI, LT, LU, Na, NR, 
-                    PI, SDN, SI, Up))
-            con.commit()
-        except mdb.Error, e:
-
-            if con:
-                con.rollback()
-
-            print "Error %d: %s. Row not made User: %s" % (
-                    e.args[0], e.args[1], UsNa)
-        finally:
-
-            if con:
-                con.close()
-   
-   
+        NR = int(0 if NR is None else NR)
+        cur.execute("""INSERT INTO Comments
+            (num_4_user, user_num, author, body, created, created_utc, 
+            distinguished, downs, edited, gilded, id, likes, link_author, 
+            link_id, link_title, link_url, name, num_reports, parent_id, 
+            subreddit_name, subreddit_id, ups) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+            %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (CUNu, UsNu, UsNa, Bo, 
+                Cr, CU, Di, Do, Ed, Gi, Id, Li, LA, LI, LT, LU, Na, NR, 
+                PI, SDN, SI, Up))
+        self.con.commit()
 
