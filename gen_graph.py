@@ -8,17 +8,13 @@ sql = RedFams.SQLOps()
 sql.open()
 print sql.status
 
-strt = 0
-end = 100
-
-userlist = range(strt,end)
-usersubs = dict()
 subs = set()
-for user in userlist:
-    reddits = sql.get_usersubs(user)
-    usersubs[user] = [set(reddits),Counter(reddits)]
+
+usersubs = dict()
+for i in xrange(500):
+    reddits = sql.get_usersubs(i)
+    usersubs[i] = [set(reddits),Counter(reddits)]
     subs |= set(reddits)
-    
 
 sql.close()
 print sql.status
@@ -27,7 +23,7 @@ min = 20 #min number of comments to be considered a 'member'
 
 subusers = {sub:set() for sub in subs}
 for sub in subs:
-    for user in userlist:
+    for user in xrange(500):
         if usersubs[user][1][sub] >= min:
            subusers[sub].add(user)
     if subusers[sub] == set():
