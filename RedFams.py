@@ -58,11 +58,11 @@ class SQLOps(object):
         nameslist = [str(i[0]) for i in names]
         return nameslist
 
-    def get_usersubs(self, name):
+    def get_usersubs(self, num):
         """Gets subreddit names when the author matches the name parameter."""
         cur = self.con.cursor()
-        cur.execute("SELECT subreddit_name FROM Comments WHERE author = %s",
-                (name,))
+        cur.execute("SELECT subreddit_name FROM Comments WHERE user_num = %s",
+                (num,))
         subs = cur.fetchall()
 
         # Again converts tuple into string.

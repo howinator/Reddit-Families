@@ -1,17 +1,17 @@
-import SQLOps
+import RedFams
 from collections import Counter
 import networkx as nx
 import numpy as np
 from matplotlib import pyplot as plt
 
-sql = SQLOps.read_SQL()
+sql = RedFams.SQLOps()
 sql.open()
 print sql.status
 
 strt = 0
-end = 500
+end = 1
 
-userlist = sql.get_usernames(strt,end)
+userlist = range(strt,end)
 usersubs = dict()
 subs = set()
 for user in userlist:
@@ -23,7 +23,7 @@ for user in userlist:
 sql.close()
 print sql.status
 
-min = 5 #min number of comments to be considered a 'member'
+min = 20 #min number of comments to be considered a 'member'
 
 subusers = {sub:set() for sub in subs}
 for sub in subs:
