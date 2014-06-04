@@ -9,9 +9,9 @@ sql.open()
 print sql.status
 
 strt = 0
-end = 1
+end = 100
 
-userlist = sql.get_usernames(strt,end)
+userlist = range(strt,end)
 usersubs = dict()
 subs = set()
 for user in userlist:
@@ -23,7 +23,7 @@ for user in userlist:
 sql.close()
 print sql.status
 
-min = 5 #min number of comments to be considered a 'member'
+min = 20 #min number of comments to be considered a 'member'
 
 subusers = {sub:set() for sub in subs}
 for sub in subs:
@@ -46,18 +46,18 @@ for i in xrange(len(reddits)):
         A[j,i] = A[i,j]
 
 min_size = np.array([.5 for i in xrange(len(reddits))])
-node_sizes = np.maximum(50*np.log(.05*np.sum(A,axis=1)),min_size)
+node_sizes = np.maximum(100*np.log(np.sum(A,axis=1)),min_size)
 
 
 labels = dict()
 for i in xrange(len(reddits)):
-    if node_sizes[i] >= 25:
+    if node_sizes[i] >= 5:
        labels[i] = reddits[i]
     else:
        labels[i] = ''
 
 G = nx.to_networkx_graph(A)
-nx.draw_spring(G,node_size = node_sizes,labels = labels,font_size = 8,width = .05,linewidths = 0.05)
+nx.draw(G,node_size = node_sizes,labels = labels,font_size = 8,width = .5,linewidths = 0)
 plt.show()
 
 
