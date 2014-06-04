@@ -61,7 +61,7 @@ class SQLOps(object):
     def get_usersubs(self, num):
         """Gets subreddit names when the author matches the name parameter."""
         cur = self.con.cursor()
-        cur.execute("SELECT subreddit_name FROM Comments WHERE user_num = %s",
+        cur.execute("SELECT subreddit_name FROM Comments WHERE total_num <= 42386 && user_num = %s",
                 (num,))
         subs = cur.fetchall()
 
