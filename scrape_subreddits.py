@@ -8,12 +8,14 @@ import sys
 agent = 'Subreddit scraping script by /u/howinator'
 
 r = praw.Reddit(user_agent = agent)
+sql = RedFams.SQLOps()
+sql.open()
+print sql.status
 
 strt = 0
 end = 499
 
-userlist = sql.get_usernames(strt, end)
-
 subs = set([])
 
-for
+for user in xrange(500):
+    sub = sql.get_usersubs(user)
