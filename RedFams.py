@@ -59,10 +59,11 @@ class SQLOps(object):
         return nameslist
 
     def get_usersubs(self, num):
-        """Gets subreddit names when the author matches the name parameter."""
+        """Gets subreddit names when the author matches the name parameter.
+        Returns list of subreddits for given user. """
         cur = self.con.cursor()
-        cur.execute("SELECT subreddit_name FROM Comments WHERE total_num <= 42386 && user_num = %s",
-                (num,))
+        cur.execute("SELECT subreddit_name FROM Comments WHERE 
+                total_num <= 42386 && user_num = %s",(num,))
         subs = cur.fetchall()
 
         # Again converts tuple into string.
@@ -76,6 +77,18 @@ class SQLOps(object):
 
         cur.execute("SHOW COLUMNS FROM Comments")
         return cur.fetchall()
+
+    def drop_table(self, table_name):
+        """ Drops table if table exists, takes table name as argument."""
+        cur = self.con.cursor()
+        cur.execute("DROP TABLE IF EXISTS %s", (table_name,))
+
+    def make_subs_table(self):
+        "Makes the subreddits table."
+        cur = self.con.cursor()
+
+
+    def add_sub_row(self, SuNu, 
 
 
 

@@ -47,4 +47,4 @@ for name in users:
         print name,'does not exist'
         m += 1
 
-self.con.close()
+sql.close()
