@@ -12,7 +12,8 @@ r = praw.Reddit(user_agent = agent)
 NUsersStart = 25087
 NUsersStop = 30000
 
-sql = RedFams.write_SQL()
+sql = RedFams.SQLOps()
+sql.open()
 
 users = sql.get_usernames(NUsersStart, NUsersStop)
 
@@ -45,4 +46,5 @@ for name in users:
     except praw.requests.HTTPError:
         print name,'does not exist'
         m += 1
-         
+
+self.con.close()
