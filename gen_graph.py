@@ -1,15 +1,15 @@
-import SQLOps
+import RedFams
 from collections import Counter
 import networkx as nx
 import numpy as np
 from matplotlib import pyplot as plt
 
-sql = SQLOps.read_SQL()
+sql = RedFams.SQLOps()
 sql.open()
 print sql.status
 
 strt = 0
-end = 500
+end = 1
 
 userlist = sql.get_usernames(strt,end)
 usersubs = dict()
