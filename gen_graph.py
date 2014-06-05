@@ -13,7 +13,7 @@ subs = set()
 usersubs = dict()
 
 TotalComsStart = 0
-TotalComsEnd = 5000
+TotalComsEnd = 50000
 
 UserSubsDict = sql.get_subnames(TotalComsStart, TotalComsEnd)
 
@@ -32,6 +32,7 @@ for sub in subs:
     for user in xrange(len(UserSubsDict.keys())):
         if usersubs[user][1][sub] >= min:
            subusers[sub].add(user)
+        print user
     if subusers[sub] == set():
        subusers.pop(sub,None)
 
