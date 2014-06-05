@@ -74,8 +74,9 @@ class SQLOps(object):
         TupleUserNums = cur.fetchall()
 
         # This comprehension converts the tuple from cur.fetchall() into list
+        # int() is there because mysql appends L to value because it returns
+        # python Long Int
         UserNumList = [int(i[0]) for i in TupleUserNums]
-        print UserNumList
         
         # This forms a list with only unique user numbers and preserves order
         UniqueUserNumList = []
@@ -94,7 +95,8 @@ class SQLOps(object):
 
             UsersSubs[UserNum] = UserSubList
 
-            print UserNum
+            print "Retrieved user_numL " + str(UserNum) + " of " + \
+            str(max(UniqueUserNumList) - 1)
 
         return UsersSubs 
 
