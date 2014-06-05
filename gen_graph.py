@@ -11,8 +11,14 @@ print sql.status
 subs = set()
 
 usersubs = dict()
-for i in xrange(500):
-    reddits = sql.get_usersubs(i)
+
+TotalComsStart = 0
+TotalComsEnd = 5000
+
+UserSubsDict = sql.get_subnames(TotalComsStart, TotalComsEnd)
+
+for i in UserSubsDict.keys():
+    reddits = UserSubsDict[i]
     usersubs[i] = [set(reddits),Counter(reddits)]
     subs |= set(reddits)
 
@@ -23,7 +29,7 @@ min = 20 #min number of comments to be considered a 'member'
 
 subusers = {sub:set() for sub in subs}
 for sub in subs:
-    for user in xrange(500):
+    for user in xrange(len(UserSubsDict.keys())):
         if usersubs[user][1][sub] >= min:
            subusers[sub].add(user)
     if subusers[sub] == set():
@@ -56,7 +62,3 @@ G = nx.to_networkx_graph(A)
 nx.draw(G,node_size = node_sizes,labels = labels,font_size = 8,width = .5,linewidths = 0)
 plt.show()
 
-
-
-
-    
