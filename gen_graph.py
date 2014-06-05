@@ -3,6 +3,9 @@ from collections import Counter
 import networkx as nx
 import numpy as np
 from matplotlib import pyplot as plt
+import json
+import io
+from networkx.readwrite import json_graph
 
 sql = RedFams.SQLOps()
 sql.open()
@@ -56,7 +59,9 @@ G = nx.to_networkx_graph(A)
 nx.draw(G,node_size = node_sizes,labels = labels,font_size = 8,width = .5,linewidths = 0)
 plt.show()
 
+data = json_graph.node_link_data(G)
+
+with open('json_500users_data.txt', 'w') as outfile:
+    json.dump(data, outfile)
 
 
-
-    
