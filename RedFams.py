@@ -84,11 +84,43 @@ class SQLOps(object):
             if i not in UniqueUserNumList:
                 UniqueUserNumList.append(i)
 
+        FirstUser = UniqueUserNumList[0]
+        LastFullUser = UniqueUserNumList[-2]
+
+        cur.execute("""SELECT user_num, subreddit_name FROM Comments 
+            WHERE total_num >= %s AND total_num < %s 
+            AND user_num >= %s AND user_num < %s""", (TotStart, TotEnd, 
+                FirstUser, LastFullUser))
+
+        # This little Charlie Foxtrot right here builds the UserSubs dictionary
+        # keeping user, subreddit pairs sorted correctly.
+        
+        UserSubsList = []
+        j = 0
+        for i in range(cur.rowcount):
+            row = cur.fetchone()
+
+            # Just to get into the next if statement on the first iteration
+            if i == 0:
+                user_i = row[0]
+
+            user_ipl1 = row[0]
+
+            if user_i == user_ipl1:
+                UserSubsList.append(row[1])
+            else:
+                user_i = int(user_i)
+                UsersSubs[user_i] = UserSubsList
+                UserSubsList = []
+                UserSubsList.append(row[1])
+                user_i = user_ipl1
+                j += 1
+        """
         # Iterate through all but last user (incomplete user)
         for UserNum in UniqueUserNumList[:-1]:
-            cur.execute("""SELECT subreddit_name FROM Comments 
+            cur.execute(""SELECT subreddit_name FROM Comments 
                 WHERE total_num >= %s AND total_num < %s 
-                AND user_num = %s""", (TotStart, TotEnd, UserNum))
+                AND user_num = %s"", (TotStart, TotEnd, UserNum))
 
             TupleUserSubs = cur.fetchall()
             UserSubList = [str(i[0]) for i in TupleUserSubs]
@@ -97,7 +129,8 @@ class SQLOps(object):
 
             print "Retrieved user_numL " + str(UserNum) + " of " + \
             str(max(UniqueUserNumList) - 1)
-
+        """
+        print UsersSubs
         return UsersSubs 
 
     def get_info(self):
