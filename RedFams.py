@@ -58,16 +58,45 @@ class SQLOps(object):
         nameslist = [str(i[0]) for i in names]
         return nameslist
 
-    def get_usersubs(self, num):
-        """Gets subreddit names when the author matches the name parameter."""
-        cur = self.con.cursor()
-        cur.execute("SELECT subreddit_name FROM Comments WHERE total_num <= 42386 && user_num = %s",
-                (num,))
-        subs = cur.fetchall()
+    def get_subnames(self, TotStart, TotEnd):
+        """Gets subreddit names for users that have total_num corresponding to
+        tot_start and tot_end. It gets redditors who are completely 
+        contained between tot_start and tot_end by  return comments for
+        user_num - 1. The redditor who has a comment at tot_end may have 
+        comments who are after tot_end. It returns a dictionary where the 
+        key is user_num and the value is a list of subreddit_names."""
 
-        # Again converts tuple into string.
-        sub_list = [i[0] for i in subs]
-        return sub_list
+        cur = self.con.cursor()
+        UsersSubs = dict()
+
+        cur.execute("""SELECT user_num FROM Comments WHERE total_num >= %s AND 
+                     total_num < %s""", (TotStart, TotEnd))
+        TupleUserNums = cur.fetchall()
+
+        # This comprehension converts the tuple from cur.fetchall() into list
+        UserNumList = [int(i[0]) for i in TupleUserNums]
+        print UserNumList
+        
+        # This forms a list with only unique user numbers and preserves order
+        UniqueUserNumList = []
+        for i in UserNumList:
+            if i not in UniqueUserNumList:
+                UniqueUserNumList.append(i)
+
+        # Iterate through all but last user (incomplete user)
+        for UserNum in UniqueUserNumList[:-1]:
+            cur.execute("""SELECT subreddit_name FROM Comments 
+                WHERE total_num >= %s AND total_num < %s 
+                AND user_num = %s""", (TotStart, TotEnd, UserNum))
+
+            TupleUserSubs = cur.fetchall()
+            UserSubList = [str(i[0]) for i in TupleUserSubs]
+
+            UsersSubs[UserNum] = UserSubList
+
+            print UserNum
+
+        return UsersSubs 
 
     def get_info(self):
         """ Gets info about the tables. """
