@@ -114,22 +114,7 @@ class SQLOps(object):
                 UserSubsList = []
                 UserSubsList.append(row[1])
                 user_i = user_ipl1
-                j += 1
-        """
-        # Iterate through all but last user (incomplete user)
-        for UserNum in UniqueUserNumList[:-1]:
-            cur.execute(""SELECT subreddit_name FROM Comments 
-                WHERE total_num >= %s AND total_num < %s 
-                AND user_num = %s"", (TotStart, TotEnd, UserNum))
-
-            TupleUserSubs = cur.fetchall()
-            UserSubList = [str(i[0]) for i in TupleUserSubs]
-
-            UsersSubs[UserNum] = UserSubList
-
-            print "Retrieved user_numL " + str(UserNum) + " of " + \
-            str(max(UniqueUserNumList) - 1)
-        """
+  
         print UsersSubs
         return UsersSubs 
 
