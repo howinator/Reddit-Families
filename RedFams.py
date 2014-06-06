@@ -115,7 +115,6 @@ class SQLOps(object):
                 UserSubsList.append(row[1])
                 user_i = user_ipl1
   
-        print UsersSubs
         return UsersSubs 
 
     def get_info(self):

@@ -13,7 +13,7 @@ subs = set()
 usersubs = dict()
 
 TotalComsStart = 0
-TotalComsEnd = 50000
+TotalComsEnd = 250000
 
 UserSubsDict = sql.get_subnames(TotalComsStart, TotalComsEnd)
 
@@ -29,12 +29,10 @@ min = 20 #min number of comments to be considered a 'member'
 
 subusers = {sub:set() for sub in subs}
 
-print UserSubsDict.keys()
 for sub in subs:
     for user in UserSubsDict.keys():
         if usersubs[user][1][sub] >= min:
            subusers[sub].add(user)
-        print user
     if subusers[sub] == set():
        subusers.pop(sub,None)
 
