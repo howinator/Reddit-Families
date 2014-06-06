@@ -13,7 +13,7 @@ subs = set()
 usersubs = dict()
 
 TotalComsStart = 0
-TotalComsEnd = 500000
+TotalComsEnd = 10000
 
 UserSubsDict = sql.get_subnames(TotalComsStart, TotalComsEnd)
 
@@ -21,9 +21,6 @@ for i in UserSubsDict.keys():
     reddits = UserSubsDict[i]
     usersubs[i] = [set(reddits),Counter(reddits)]
     subs |= set(reddits)
-
-sql.close()
-print sql.status
 
 min = 20 #min number of comments to be considered a 'member'
 
@@ -45,14 +42,19 @@ A = np.zeros((len(subusers.keys()),len(subusers.keys())))
 reddits = subusers.keys()
 for i in xrange(len(reddits)):
     for j in xrange(i,len(reddits)):
+        # Intersection of subreddit_i and subreddit_j 
         common = len(subusers[reddits[i]]&subusers[reddits[j]])
         if common >= link_min:
            A[i,j] = common
            A[j,i] = A[i,j]
 
+SubsSizes = sql.get_subsize(reddits)
+ListSubsSizes = SubsSizes.values()
+print ListSubsSizes
 min_size = np.array([.5 for i in xrange(len(reddits))])
-node_sizes = np.maximum(100*np.log(np.sum(A,axis=1)),min_size)
-
+node_sizes = np.maximum(np.log(ListSubsSizes),min_size)
+sql.close()
+sql.status
 
 labels = dict()
 for i in xrange(len(reddits)):
@@ -62,6 +64,7 @@ for i in xrange(len(reddits)):
        labels[i] = ''
 
 G = nx.to_networkx_graph(A)
-nx.draw(G,node_size = node_sizes,labels = labels,font_size = 8,width = .5,linewidths = 0)
+nx.draw(G,node_size = node_sizes,labels = labels,
+        font_size = 8,width = .5,linewidths = 0.5)
 plt.show()
-
+nx.write_gexf(G, "test.gexf")

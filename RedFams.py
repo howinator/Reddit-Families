@@ -58,6 +58,27 @@ class SQLOps(object):
         nameslist = [str(i[0]) for i in names]
         return nameslist
 
+    def get_subsize(self, Subs):
+        """Takes a list of subreddits as the argument, and returns a dictionary
+        with the number of subscribers for the subreddit."""
+
+        cur = self.con.cursor()
+        SubsSize = dict()
+
+        # This just fetches the subreddits' subscribers one-by-one
+        for sub in Subs:
+            if sub == None:
+                SubsSize[sub] = 0
+            else:
+                cur.execute("""SELECT subscribers FROM Subreddits 
+                    WHERE display_name = %s""", (sub,))
+                TupleSubscribers = cur.fetchall()
+                # Converts from long int to regular int
+                ListSubscribers = [int(i[0]) for i in TupleSubscribers]
+                SubsSize[sub] = ListSubscribers[0]
+
+        return SubsSize
+
     def get_subnames(self, TotStart, TotEnd):
         """Gets subreddit names for users that have total_num corresponding to
         tot_start and tot_end. It gets redditors who are completely 
