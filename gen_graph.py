@@ -38,15 +38,17 @@ for sub in subs:
 
 
 
-
+link_min = 2
 #print subusers[subusers.keys()[0]]
 print len(subusers.keys())
 A = np.zeros((len(subusers.keys()),len(subusers.keys())))
 reddits = subusers.keys()
 for i in xrange(len(reddits)):
     for j in xrange(i,len(reddits)):
-        A[i,j] += len(subusers[reddits[i]]&subusers[reddits[j]])
-        A[j,i] = A[i,j]
+        common = len(subusers[reddits[i]]&subusers[reddits[j]])
+        if common >= link_min:
+           A[i,j] = common
+           A[j,i] = A[i,j]
 
 min_size = np.array([.5 for i in xrange(len(reddits))])
 node_sizes = np.maximum(100*np.log(np.sum(A,axis=1)),min_size)
