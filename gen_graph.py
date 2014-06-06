@@ -13,7 +13,7 @@ subs = set()
 usersubs = dict()
 
 TotalComsStart = 0
-TotalComsEnd = 50000
+TotalComsEnd = 500000
 
 UserSubsDict = sql.get_subnames(TotalComsStart, TotalComsEnd)
 
@@ -28,9 +28,9 @@ print sql.status
 min = 20 #min number of comments to be considered a 'member'
 
 subusers = {sub:set() for sub in subs}
-print usersubs[228][1][:]
+
 for sub in subs:
-    for user in xrange(len(UserSubsDict.keys())):
+    for user in UserSubsDict.keys():
         if usersubs[user][1][sub] >= min:
            subusers[sub].add(user)
     if subusers[sub] == set():
@@ -38,15 +38,17 @@ for sub in subs:
 
 
 
-
+link_min = 2
 #print subusers[subusers.keys()[0]]
 print len(subusers.keys())
 A = np.zeros((len(subusers.keys()),len(subusers.keys())))
 reddits = subusers.keys()
 for i in xrange(len(reddits)):
     for j in xrange(i,len(reddits)):
-        A[i,j] += len(subusers[reddits[i]]&subusers[reddits[j]])
-        A[j,i] = A[i,j]
+        common = len(subusers[reddits[i]]&subusers[reddits[j]])
+        if common >= link_min:
+           A[i,j] = common
+           A[j,i] = A[i,j]
 
 min_size = np.array([.5 for i in xrange(len(reddits))])
 node_sizes = np.maximum(100*np.log(np.sum(A,axis=1)),min_size)

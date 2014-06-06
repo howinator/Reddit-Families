@@ -9,8 +9,8 @@ agent = 'Comment scraping script by /u/howinator'
 
 r = praw.Reddit(user_agent = agent)
 
-NUsersStart = 25087
-NUsersStop = 30000
+NUsersStart = 30000
+NUsersStop = 45900
 
 sql = RedFams.SQLOps()
 sql.open()
