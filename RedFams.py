@@ -58,16 +58,64 @@ class SQLOps(object):
         nameslist = [str(i[0]) for i in names]
         return nameslist
 
-    def get_usersubs(self, num):
-        """Gets subreddit names when the author matches the name parameter."""
-        cur = self.con.cursor()
-        cur.execute("SELECT subreddit_name FROM Comments WHERE total_num <= 42386 && user_num = %s",
-                (num,))
-        subs = cur.fetchall()
+    def get_subnames(self, TotStart, TotEnd):
+        """Gets subreddit names for users that have total_num corresponding to
+        tot_start and tot_end. It gets redditors who are completely 
+        contained between tot_start and tot_end by  return comments for
+        user_num - 1. The redditor who has a comment at tot_end may have 
+        comments who are after tot_end. It returns a dictionary where the 
+        key is user_num and the value is a list of subreddit_names."""
 
-        # Again converts tuple into string.
-        sub_list = [i[0] for i in subs]
-        return sub_list
+        cur = self.con.cursor()
+        UsersSubs = dict()
+
+        cur.execute("""SELECT user_num FROM Comments WHERE total_num >= %s AND 
+                     total_num < %s""", (TotStart, TotEnd))
+        TupleUserNums = cur.fetchall()
+
+        # This comprehension converts the tuple from cur.fetchall() into list
+        # int() is there because mysql appends L to value because it returns
+        # python Long Int
+        UserNumList = [int(i[0]) for i in TupleUserNums]
+        
+        # This forms a list with only unique user numbers and preserves order
+        UniqueUserNumList = []
+        for i in UserNumList:
+            if i not in UniqueUserNumList:
+                UniqueUserNumList.append(i)
+
+        FirstUser = UniqueUserNumList[0]
+        LastFullUser = UniqueUserNumList[-2]
+
+        cur.execute("""SELECT user_num, subreddit_name FROM Comments 
+            WHERE total_num >= %s AND total_num < %s 
+            AND user_num >= %s AND user_num < %s""", (TotStart, TotEnd, 
+                FirstUser, LastFullUser))
+
+        # This little Charlie Foxtrot right here builds the UserSubs dictionary
+        # keeping user, subreddit pairs sorted correctly.
+        
+        UserSubsList = []
+        j = 0
+        for i in range(cur.rowcount):
+            row = cur.fetchone()
+
+            # Just to get into the next if statement on the first iteration
+            if i == 0:
+                user_i = row[0]
+
+            user_ipl1 = row[0]
+
+            if user_i == user_ipl1:
+                UserSubsList.append(row[1])
+            else:
+                user_i = int(user_i)
+                UsersSubs[user_i] = UserSubsList
+                UserSubsList = []
+                UserSubsList.append(row[1])
+                user_i = user_ipl1
+  
+        return UsersSubs 
 
     def get_info(self):
         """ Gets info about the tables. """
