@@ -58,6 +58,30 @@ class SQLOps(object):
         nameslist = [str(i[0]) for i in names]
         return nameslist
 
+    def get_subsize(self, Subs):
+        """Takes a list of subreddits as the argument, and returns a dictionary
+        with the number of subscribers for the subreddit."""
+
+        cur = self.con.cursor()
+        SubsSize = dict()
+
+        # This just fetches the subreddits' subscribers one-by-one
+        for sub in Subs:
+            if sub == None:
+                SubsSize[sub] = 0
+            else:
+                cur.execute("""SELECT subscribers FROM Subreddits 
+                    WHERE display_name = %s""", (sub,))
+                TupleSubscribers = cur.fetchall()
+                # Converts from long int to regular int
+                ListSubscribers = [float(i[0]) if i[0] != None else 0.1 
+                        for i in TupleSubscribers]
+                # checks for empty list
+                SubsSize[sub] = 0.1 if not ListSubscribers else \
+                ListSubscribers[0]
+        print SubsSize
+        return SubsSize
+
     def get_subnames(self, TotStart, TotEnd):
         """Gets subreddit names for users that have total_num corresponding to
         tot_start and tot_end. It gets redditors who are completely 
@@ -177,5 +201,60 @@ class SQLOps(object):
             %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (CUNu, UsNu, UsNa, Bo, 
                 Cr, CU, Di, Do, Ed, Gi, Id, Li, LA, LI, LT, LU, Na, NR, 
                 PI, SDN, SI, Up))
+        self.con.commit()
+
+    def add_sub_row(self, Ac, ScHd, Cr, CrUt, Dn, DnHl, 
+            DsNm, HF, HImg, HdTl, Id, JSON, Na, NSFW, 
+            PuDn, PbTr, ST, SLL, STex, STexH, STexL, SbTp, Size, Tl, URL):
+        """ Adds all usable attributes from single comment returned from
+        (PRAW) user.get_comments to the database. THis function must be
+        called for each new comment API call. 'it' menas comment below.
+
+        Keyword arguments:
+        self -- instantiates object
+        Ac -- Number of accounts active (at time of call)
+        ScHd -- Min comment score to hide
+        Cr -- When created
+        CrUt -- UTC time it was created (comment.created_utc)
+        Dn -- Full subreddit description
+        DnHl -- Full description in html
+        DsNm -- Display name
+        HF - Has fetched (subreddit.has_fetched)
+        HImg -- Subreddit header image url
+        HdTl -- Subreddit header title
+        Id -- Subreddit id
+        JSON -- JSON dictionary (honestly not completely sure)
+        Na -- Name
+        NSFW -- over 18 (boolean)
+        PuDn -- Public description of subreddit
+        PbTr -- public traffic (boolean)
+        ST -- submission types allowed
+        SLL -- Submit link label
+        STex -- Submit button text
+        STexH -- Submit Button text in html
+        STexL -- Submit Button text label
+        SbTp -- Subreddit type (public vs private)
+        Size -- Number of subscribers
+        Tl -- Title
+        URL -- Subreddit URL """
+  
+        cur = self.con.cursor()
+        cur.execute('SET NAMES utf8;')
+        cur.execute('SET CHARACTER SET utf8;')
+        cur.execute('SET character_set_connection=utf8;')
+
+            
+        # NR = int(0 if NR is None else NR)
+        cur.execute("""INSERT INTO Subreddits
+            (accounts_active, comment_score_hide_mins, created, created_utc,
+            description, description_html, display_name, has_fetched,
+            header_img, header_title, id, json_dict, name, over18,
+            public_description, public_traffic, submission_type, 
+            submit_link_label, submit_text, submit_text_html,
+            submit_text_label, subreddit_type, subscribers, title, url) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (Ac, ScHd, Cr, CrUt,
+                Dn, DnHl, DsNm, HF, HImg, HdTl, Id, JSON, Na, NSFW, PuDn, PbTr, ST,
+                SLL, STex, STexH, STexL, SbTp, Size, Tl, URL)) 
         self.con.commit()
 
