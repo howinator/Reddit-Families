@@ -13,7 +13,7 @@ subs = set()
 usersubs = dict()
 
 TotalComsStart = 0
-TotalComsEnd = 10000
+TotalComsEnd = 50000
 
 UserSubsDict = sql.get_subnames(TotalComsStart, TotalComsEnd)
 
@@ -51,8 +51,10 @@ for i in xrange(len(reddits)):
 SubsSizes = sql.get_subsize(reddits)
 ListSubsSizes = SubsSizes.values()
 print ListSubsSizes
+
 min_size = np.array([.5 for i in xrange(len(reddits))])
-node_sizes = np.maximum(np.log(ListSubsSizes),min_size)
+node_sizes = np.maximum(50*np.log(ListSubsSizes),min_size)
+
 sql.close()
 sql.status
 
