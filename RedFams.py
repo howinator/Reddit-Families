@@ -74,8 +74,11 @@ class SQLOps(object):
                     WHERE display_name = %s""", (sub,))
                 TupleSubscribers = cur.fetchall()
                 # Converts from long int to regular int
-                ListSubscribers = [int(i[0]) for i in TupleSubscribers]
-                SubsSize[sub] = ListSubscribers[0]
+                ListSubscribers = [int(i[0]) if i[0] != None else 0 
+                        for i in TupleSubscribers]
+                # checks for empty list
+                SubsSize[sub] = 0.1 if not ListSubscribers else \
+                ListSubscribers[0]
 
         return SubsSize
 
