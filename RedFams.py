@@ -178,4 +178,51 @@ class SQLOps(object):
                 Cr, CU, Di, Do, Ed, Gi, Id, Li, LA, LI, LT, LU, Na, NR, 
                 PI, SDN, SI, Up))
         self.con.commit()
+    def add_sub_row(self, Ac, ScHd, Cr, CrUt, Dn, DnHl, 
+            DsNm, HImg, HdTl, Id, JSON, Na, NSFW, 
+            PbDn, PbTr, ST, SbTp, Size, Tl, URL):
+        """ Adds all usable attributes from single comment returned from
+        (PRAW) user.get_comments to the database. THis function must be
+        called for each new comment API call. 'it' menas comment below.
+
+        Keyword arguments:
+        self -- instantiates object
+        Ac -- Number of accounts active (at time of call)
+        ScHd -- Min comment score to hide
+        Cr -- When created
+        CrUt -- UTC time it was created (comment.created_utc)
+        Dn -- Full subreddit description
+        DnHl -- Full description in html
+        DsNm -- Display name
+        HImg -- Subreddit header image url
+        HdTl -- Subreddit header title
+        Id -- Subreddit id
+        JSON -- JSON dictionary (honestly not completely sure)
+        Na -- Name
+        NSFW -- over 18 (boolean)
+        Dn -- Public description of subreddit
+        PbTr -- public traffic (boolean)
+        ST -- submission types allowed
+        SbTp -- Subreddit type (public vs private)
+        Size -- Number of subscribers
+        Tl -- Title
+        URL -- Subreddit URL
+  
+        cur = self.con.cursor()
+        cur.execute('SET NAMES utf8;')
+        cur.execute('SET CHARACTER SET utf8;')
+        cur.execute('SET character_set_connection=utf8;')
+
+            
+        NR = int(0 if NR is None else NR)
+        cur.execute("""INSERT INTO Subreddits
+            (num_4_user, user_num, author, body, created, created_utc, 
+            distinguished, downs, edited, gilded, id, likes, link_author, 
+            link_id, link_title, link_url, name, num_reports, parent_id, 
+            subreddit_name, subreddit_id, ups) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+            %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (CUNu, UsNu, UsNa, Bo, 
+                Cr, CU, Di, Do, Ed, Gi, Id, Li, LA, LI, LT, LU, Na, NR, 
+                PI, SDN, SI, Up))
+        self.con.commit()
 
