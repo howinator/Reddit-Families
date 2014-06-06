@@ -14,7 +14,7 @@ sql.open()
 
 # Starting and ending point for comment pulling
 CommentsStart = 0
-CommentsEnd = 5000
+CommentsEnd = 2622572
 
 # Get dictionary of user keys and subreddit names as lists for value
 UserSubsDict = sql.get_subnames(CommentsStart, CommentsEnd)
