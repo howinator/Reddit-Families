@@ -37,5 +37,3 @@
  'user_is_contributor': None,
  'user_is_moderator': None,
  'user_is_subscriber': None}
-
-
