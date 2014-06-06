@@ -52,8 +52,13 @@ SubsSizes = sql.get_subsize(reddits)
 ListSubsSizes = SubsSizes.values()
 print ListSubsSizes
 
+SizeCoff = .01
+#for sub in ListSubsSizes:
+#    sub = sub * SizeCoff
+npSizes = np.array(ListSubsSizes)
+
 min_size = np.array([.5 for i in xrange(len(reddits))])
-node_sizes = np.maximum(50*np.log(ListSubsSizes),min_size)
+node_sizes = np.maximum(50*np.log(npSizes/SizeCoff),min_size)
 
 sql.close()
 sql.status
