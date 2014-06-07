@@ -22,7 +22,7 @@ for i in UserSubsDict.keys():
     usersubs[i] = [set(reddits),Counter(reddits)]
     subs |= set(reddits)
 
-min = 20 #min number of comments to be considered a 'member'
+min = 5 #min number of comments to be considered a 'member'
 
 subusers = {sub:set() for sub in subs}
 
@@ -35,7 +35,7 @@ for sub in subs:
 
 
 
-link_min = 2
+link_min = 1
 #print subusers[subusers.keys()[0]]
 print len(subusers.keys())
 A = np.zeros((len(subusers.keys()),len(subusers.keys())))
@@ -52,13 +52,13 @@ SubsSizes = sql.get_subsize(reddits)
 ListSubsSizes = SubsSizes.values()
 print ListSubsSizes
 
-SizeCoff = .01
+SizeCoff = .0001
 #for sub in ListSubsSizes:
 #    sub = sub * SizeCoff
 npSizes = np.array(ListSubsSizes)
 
 min_size = np.array([.5 for i in xrange(len(reddits))])
-node_sizes = np.maximum(50*np.log(npSizes/SizeCoff),min_size)
+node_sizes = np.maximum(50*np.log(npSizes*SizeCoff),min_size)
 
 sql.close()
 sql.status
@@ -72,6 +72,6 @@ for i in xrange(len(reddits)):
 
 G = nx.to_networkx_graph(A)
 nx.draw(G,node_size = node_sizes,labels = labels,
-        font_size = 8,width = .5,linewidths = 0.5)
+        font_size = 8,width = .05,linewidths = 0.5)
 plt.show()
 nx.write_gexf(G, "test.gexf")
