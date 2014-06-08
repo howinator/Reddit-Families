@@ -14,19 +14,27 @@ print sql.status
 subs = set()
 
 usersubs = dict()
-for i in xrange(500):
-    reddits = sql.get_usersubs(i)
+
+TotalComsStart = 0
+TotalComsEnd = 50000
+
+UserSubsDict = sql.get_subnames(TotalComsStart, TotalComsEnd)
+# create dictionary assigning set of subs and count of each 
+# to each user, as well as set of all subs
+for i in UserSubsDict.keys():
+    reddits = UserSubsDict[i]
     usersubs[i] = [set(reddits),Counter(reddits)]
     subs |= set(reddits)
 
-sql.close()
-print sql.status
-
-min = 20 #min number of comments to be considered a 'member'
+min = 5 #min number of comments to be considered a 'member'
 
 subusers = {sub:set() for sub in subs}
+
+# Create dict with subs as keys and all users who have commented
+# at least min times in a given sub as keys
+# Also eliminates subreddits with no comments by given users
 for sub in subs:
-    for user in xrange(500):
+    for user in UserSubsDict.keys():
         if usersubs[user][1][sub] >= min:
            subusers[sub].add(user)
     if subusers[sub] == set():
@@ -34,19 +42,33 @@ for sub in subs:
 
 
 
-
+link_min = 1
 #print subusers[subusers.keys()[0]]
 print len(subusers.keys())
 A = np.zeros((len(subusers.keys()),len(subusers.keys())))
 reddits = subusers.keys()
 for i in xrange(len(reddits)):
     for j in xrange(i,len(reddits)):
-        A[i,j] += len(subusers[reddits[i]]&subusers[reddits[j]])
-        A[j,i] = A[i,j]
+        # Intersection of subreddit_i and subreddit_j 
+        common = len(subusers[reddits[i]]&subusers[reddits[j]])
+        if common >= link_min:
+           A[i,j] = common
+           A[j,i] = A[i,j]
+
+SubsSizes = sql.get_subsize(reddits)
+ListSubsSizes = SubsSizes.values()
+print ListSubsSizes
+
+SizeCoff = .0001
+#for sub in ListSubsSizes:
+#    sub = sub * SizeCoff
+npSizes = np.array(ListSubsSizes)
 
 min_size = np.array([.5 for i in xrange(len(reddits))])
-node_sizes = np.maximum(100*np.log(np.sum(A,axis=1)),min_size)
+node_sizes = np.maximum(50*np.log(npSizes*SizeCoff),min_size)
 
+sql.close()
+sql.status
 
 labels = dict()
 for i in xrange(len(reddits)):
@@ -56,7 +78,14 @@ for i in xrange(len(reddits)):
        labels[i] = ''
 
 G = nx.to_networkx_graph(A)
-nx.draw(G,node_size = node_sizes,labels = labels,font_size = 8,width = .5,linewidths = 0)
+nx.set_node_attributes(G,'subname',labels)
+print type(labels[0])
+size_dict = {i:float(node_sizes[i]) for i in xrange(len(reddits))}
+print type(size_dict[0])
+nx.set_node_attributes(G,'size',size_dict)
+
+nx.draw(G,node_size = node_sizes,labels = labels,
+        font_size = 8,width = .05,linewidths = 0.5)
 plt.show()
 
 data = json_graph.node_link_data(G)
@@ -65,3 +94,4 @@ with open('json_500users_data.txt', 'w') as outfile:
     json.dump(data, outfile)
 
 
+nx.write_gexf(G, "test.gexf")
