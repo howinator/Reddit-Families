@@ -60,7 +60,8 @@ class SQLOps(object):
 
     def get_subsize(self, Subs):
         """Takes a list of subreddits as the argument, and returns a dictionary
-        with the number of subscribers for the subreddit."""
+        with the number of subscribers for the subreddit. 
+        NOTE: Value of 0.1 means that there as an error with that subreddit."""
 
         cur = self.con.cursor()
         SubsSize = dict()
