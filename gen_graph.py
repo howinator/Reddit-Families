@@ -53,7 +53,7 @@ for i in xrange(len(reddits)):
            A[j,i] = A[i,j]
 
 SubsSizes = sql.get_subsize(reddits)
-ListSubsSizes = SubsSizes.values()
+ListSubsSizes = [SubsSizes[i] for i in reddits]
 print ListSubsSizes
 
 SizeCoff = .0001
@@ -62,14 +62,14 @@ SizeCoff = .0001
 npSizes = np.array(ListSubsSizes)
 
 min_size = np.array([.5 for i in xrange(len(reddits))])
-node_sizes = np.maximum(50*np.log(npSizes*SizeCoff),min_size)
+node_sizes = np.maximum(25*np.log(npSizes*SizeCoff),min_size)
 
 sql.close()
 sql.status
 
 labels = dict()
 for i in xrange(len(reddits)):
-    if node_sizes[i] >= 5:
+    if npSizes[i] >= 100000:
        labels[i] = reddits[i]
     else:
        labels[i] = ''
@@ -78,7 +78,7 @@ G = nx.to_networkx_graph(A)
 nx.set_node_attributes(G,'subname',labels)
 print type(labels[0])
 size_dict = {i:float(node_sizes[i]) for i in xrange(len(reddits))}
-print type(size_dict[0])
+
 nx.set_node_attributes(G,'size',size_dict)
 
 nx.draw(G,node_size = node_sizes,labels = labels,
