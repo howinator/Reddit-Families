@@ -72,6 +72,6 @@ for i in xrange(len(reddits)):
 
 G = nx.to_networkx_graph(A)
 nx.draw(G,node_size = node_sizes,labels = labels,
-        font_size = 8,width = .05,linewidths = 0.5)
+        font_size = 8,width = .05,linewidths = 1)
 plt.show()
 nx.write_gexf(G, "test.gexf")
