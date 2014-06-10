@@ -16,7 +16,8 @@ TotalComsStart = 0
 TotalComsEnd = 50000
 
 UserSubsDict = sql.get_subnames(TotalComsStart, TotalComsEnd)
-
+# create dictionary assigning set of subs and count of each 
+# to each user, as well as set of all subs
 for i in UserSubsDict.keys():
     reddits = UserSubsDict[i]
     usersubs[i] = [set(reddits),Counter(reddits)]
@@ -26,6 +27,9 @@ min = 5 #min number of comments to be considered a 'member'
 
 subusers = {sub:set() for sub in subs}
 
+# Create dict with subs as keys and all users who have commented
+# at least min times in a given sub as keys
+# Also eliminates subreddits with no comments by given users
 for sub in subs:
     for user in UserSubsDict.keys():
         if usersubs[user][1][sub] >= min:
@@ -49,7 +53,7 @@ for i in xrange(len(reddits)):
            A[j,i] = A[i,j]
 
 SubsSizes = sql.get_subsize(reddits)
-ListSubsSizes = SubsSizes.values()
+ListSubsSizes = [SubsSizes[i] for i in reddits]
 print ListSubsSizes
 
 SizeCoff = .0001
@@ -58,19 +62,25 @@ SizeCoff = .0001
 npSizes = np.array(ListSubsSizes)
 
 min_size = np.array([.5 for i in xrange(len(reddits))])
-node_sizes = np.maximum(50*np.log(npSizes*SizeCoff),min_size)
+node_sizes = np.maximum(25*np.log(npSizes*SizeCoff),min_size)
 
 sql.close()
 sql.status
 
 labels = dict()
 for i in xrange(len(reddits)):
-    if node_sizes[i] >= 5:
+    if npSizes[i] >= 100000:
        labels[i] = reddits[i]
     else:
        labels[i] = ''
 
 G = nx.to_networkx_graph(A)
+nx.set_node_attributes(G,'subname',labels)
+print type(labels[0])
+size_dict = {i:float(node_sizes[i]) for i in xrange(len(reddits))}
+
+nx.set_node_attributes(G,'size',size_dict)
+
 nx.draw(G,node_size = node_sizes,labels = labels,
         font_size = 8,width = .05,linewidths = 1)
 plt.show()
