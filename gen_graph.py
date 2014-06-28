@@ -95,6 +95,6 @@ size_dict = {i:float(node_sizes[i]) for i in xrange(len(reddits))}
 nx.set_node_attributes(G,'size',size_dict)
 
 nx.draw(G,node_size = node_sizes,labels = {i:labels[i] for i in xrange(len(reddits))},
-        font_size = 8,width = .05,linewidths = 0.05) #,edgelist =edges,nodelist=nodes
+        font_size = 8,width = .05,linewidths = 0.05,edgelist=edges,nodelist=nodes)
 plt.show()
 #nx.write_gexf(G, "test.gexf")
