@@ -57,11 +57,11 @@ ListSubsSizes = [SubsSizes[i] for i in reddits]
 #print ListSubsSizes
 
 SizeCoff = .0001
-#for sub in ListSubsSizes:
-#    sub = sub * SizeCoff
+
+# Numpy array makes this easier to handle
 npSizes = np.array(ListSubsSizes)
 
-
+# Instantiating the array
 min_size = np.array([.5 for i in xrange(len(reddits))])
 node_sizes = np.maximum(25*np.log(npSizes*SizeCoff),min_size)
 
@@ -94,7 +94,9 @@ size_dict = {i:float(node_sizes[i]) for i in xrange(len(reddits))}
 
 nx.set_node_attributes(G,'size',size_dict)
 
-nx.draw(G,node_size = node_sizes,labels = {i:labels[i] for i in xrange(len(reddits))},
-        font_size = 8,width = .05,linewidths = 0.05,edgelist=edges,nodelist=nodes)
+nx.draw(G,node_size = node_sizes,labels = 
+        {i:labels[i] for i in xrange(len(reddits))},
+        font_size = 8,width = .05, linewidths = 0.05, 
+        edgelist=edges, nodelist=nodes)
 plt.show()
 #nx.write_gexf(G, "test.gexf")
