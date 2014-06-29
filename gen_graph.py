@@ -13,7 +13,7 @@ subs = set()
 usersubs = dict()
 
 TotalComsStart = 0
-TotalComsEnd = 50000
+TotalComsEnd = 100000
 
 UserSubsDict = sql.get_subnames(TotalComsStart, TotalComsEnd)
 # create dictionary assigning set of subs and count of each 
@@ -41,7 +41,7 @@ for sub in subs:
 
 link_min = 1
 #print subusers[subusers.keys()[0]]
-print len(subusers.keys())
+#print len(subusers.keys())
 A = np.zeros((len(subusers.keys()),len(subusers.keys())))
 reddits = subusers.keys()
 for i in xrange(len(reddits)):
@@ -54,12 +54,13 @@ for i in xrange(len(reddits)):
 
 SubsSizes = sql.get_subsize(reddits)
 ListSubsSizes = [SubsSizes[i] for i in reddits]
-print ListSubsSizes
+#print ListSubsSizes
 
 SizeCoff = .0001
 #for sub in ListSubsSizes:
 #    sub = sub * SizeCoff
 npSizes = np.array(ListSubsSizes)
+
 
 min_size = np.array([.5 for i in xrange(len(reddits))])
 node_sizes = np.maximum(25*np.log(npSizes*SizeCoff),min_size)
@@ -67,21 +68,35 @@ node_sizes = np.maximum(25*np.log(npSizes*SizeCoff),min_size)
 sql.close()
 sql.status
 
+
 labels = dict()
 for i in xrange(len(reddits)):
-    if npSizes[i] >= 100000:
+    #labels[i] = reddits[i]
+    
+    if npSizes[i] >= 500000:
        labels[i] = reddits[i]
     else:
        labels[i] = ''
-
+    
 G = nx.to_networkx_graph(A)
+cliques = list(nx.find_cliques(G))
+print len(cliques), 'cliques'
+edges = []
+nodes = []
+for clique in cliques:
+    for i in xrange(len(clique)):
+        nodes.append(i)
+        for j in xrange(i,len(clique)):
+            edges.append((i,j))
 nx.set_node_attributes(G,'subname',labels)
-print type(labels[0])
+#print type(labels[0])
 size_dict = {i:float(node_sizes[i]) for i in xrange(len(reddits))}
 
 nx.set_node_attributes(G,'size',size_dict)
 
-nx.draw(G,node_size = node_sizes,labels = labels,
-        font_size = 8,width = .05,linewidths = 1)
+nx.draw(G,node_size = node_sizes,labels = 
+        {i:labels[i] for i in xrange(len(reddits))},
+        font_size = 8, width = .05, linewidths = 0.05, 
+        edgelist=edges, nodelist=nodes)
 plt.show()
-nx.write_gexf(G, "test.gexf")
+#nx.write_gexf(G, "test.gexf")
