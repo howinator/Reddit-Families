@@ -90,7 +90,7 @@ for clique in cliques:
         for j in xrange(i,len(clique)):
             edges.append((i,j))
 '''
-nx.set_node_attributes(G,'Label',labels)
+nx.set_node_attributes(G,'Subreddit Name',labels)
 size_dict = {i:float(node_sizes[i]) for i in xrange(len(reddits))}
 
 nx.set_node_attributes(G,'size',size_dict)
