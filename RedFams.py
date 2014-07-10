@@ -79,7 +79,7 @@ class SQLOps(object):
                         for i in TupleSubscribers]
                 # checks for empty list
                 SubsSize[sub] = 0.1 if not ListSubscribers else \
-                ListSubscribers[0]
+                                ListSubscribers[0]
         print SubsSize
         return SubsSize
     
