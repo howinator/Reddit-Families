@@ -79,9 +79,36 @@ class SQLOps(object):
                         for i in TupleSubscribers]
                 # checks for empty list
                 SubsSize[sub] = 0.1 if not ListSubscribers else \
-                ListSubscribers[0]
+                                ListSubscribers[0]
         print SubsSize
         return SubsSize
+    
+    
+    def get_subdata(self,subs,cols):
+        '''
+        This takes a list (or single) of subreddits (column names) and returns
+        a dictionary with each key being a subreddit and the values being list
+        of data corresponding to the column names provided.  There are probably 
+        ways to optimize this.
+        '''
+
+        if type(subs) == type(''):
+           subs = [subs]
+        if type(cols) == type(''):
+           cols = [cols]
+           
+        cur = self.con.cursor()
+        data = {sub:[] for sub in subs}
+        for sub in subs:
+            lst = []
+            for col in cols:
+                cur.execute("""SELECT description_html FROM Subreddits WHERE 
+                               display_name = %s""", (sub,))
+               # result = cur.fetchone()
+               # print result
+                lst.append(cur.fetchone())
+            data[sub] = lst
+        return data
 
     def get_subnames(self, TotStart, TotEnd):
         """Gets subreddit names for users that have total_num corresponding to
@@ -144,7 +171,7 @@ class SQLOps(object):
 
     def get_info(self):
         """ Gets info about the tables. """
-        cur.self.con.cursor()
+        cur = self.con.cursor()
         cur.execute("SHOW TABLES")
 
         cur.execute("SHOW COLUMNS FROM Comments")
