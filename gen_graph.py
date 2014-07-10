@@ -13,7 +13,7 @@ subs = set()
 usersubs = dict()
 
 TotalComsStart = 0
-TotalComsEnd = 100000
+TotalComsEnd = 4000000
 
 UserSubsDict = sql.get_subnames(TotalComsStart, TotalComsEnd)
 # create dictionary assigning set of subs and count of each 

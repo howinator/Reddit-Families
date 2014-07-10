@@ -98,14 +98,17 @@ class SQLOps(object):
            cols = [cols]
            
         cur = self.con.cursor()
-        data = {sub:[] for sub in subs}
+        data = dict()
+        col_names = ",".join(cols)
+        print col_names
         for sub in subs:
-            lst = []
-            for col in cols:
-                cur.execute("""SELECT %s FROM Subreddits WHERE 
-                               display_name = %s""",(col,sub))
-                lst.append(cur.fetchall)
-            data[sub] = lst
+            query = "SELECT " + col_names + """ FROM Subreddits WHERE 
+                 display_name = %s"""
+            print query
+            cur.execute(query, (sub,))
+            lst = list(cur.fetchone())
+            dic = {cols[i]:lst[i] for i in xrange(len(cols))}
+            data[sub] = dic
         return data
 
     def get_subnames(self, TotStart, TotEnd):
