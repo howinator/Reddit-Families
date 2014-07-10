@@ -14,7 +14,7 @@
   },
   "legend": {
     "edgeLabel": "Common Users",
-    "colorLabel": "",
+    "colorLabel": "Subreddit size",
     "nodeLabel": "Subreddits"
   },
   "features": {
