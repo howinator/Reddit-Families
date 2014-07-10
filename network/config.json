@@ -13,14 +13,14 @@
     "intro": ""
   },
   "legend": {
-    "edgeLabel": "Common Users",
-    "colorLabel": "Subreddit size",
-    "nodeLabel": "Subreddits"
+    "edgeLabel": "Common Commenters",
+    "colorLabel": "Cluster (Based on modularity)",
+    "nodeLabel": "Subreddit Name"
   },
   "features": {
     "search": true,
-    "groupSelectorAttribute": "Label",
-    "hoverBehavior": "dim"
+    "groupSelectorAttribute": false,
+    "hoverBehavior": "default"
   },
   "informationPanel": {
     "imageAttribute": false,
