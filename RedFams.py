@@ -44,6 +44,15 @@ class SQLOps(object):
         " Simply calls the MySQLdb close method to close connection. "
         self.con.close()
         self.status = "closed"
+     
+    def query(self, qry):
+        '''Gives us more flexibility, this will just take any SQL 
+        query string qry and execute and return it'''
+        cur = self.con.cursor()
+        cur.execute(qry)
+        result = cur.fetchall()
+        return result
+
 
     def get_usernames(self, start, stop):
         """Gets (stop-start) number of usernames and returns list."""
