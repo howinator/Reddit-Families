@@ -13,7 +13,6 @@ authorlist = list(set(authortuple))
 qry = 'SELECT subreddit_name FROM Comments WHERE author IN %s'
 subs = sql.query(qry,[authorlist])
 sublist = list(set([sub[0] for sub in subs]))   
-print sublist
 
 qry = '''SELECT author, subreddit_name, count(*) FROM Comments
          WHERE author IN %s AND subreddit_name IN %s
@@ -23,10 +22,8 @@ qry = '''SELECT author, subreddit_name, count(*) FROM Comments
 
 comm_counts = sql.query(qry,[authorlist,sublist])
 sql.close()
-print comm_counts
 m = len(authorlist)
 n = len(sublist)
-print m,n
 Ratings = np.zeros((m,n))
 for i in xrange(m):
     for j in xrange(n):
@@ -35,10 +32,6 @@ for i in xrange(m):
                Ratings[i,j] = float(result[2])
 
 
-print np.amax(Ratings)
-print Ratings
 ind = np.nonzero(Ratings)
-print len(ind[0]), len(ind[1])
-print Ratings[ind]
 np.save('Ratings.npy',Ratings)
 
