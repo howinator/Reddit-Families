@@ -4,24 +4,26 @@ import numpy as np
 
 sql = RedFams.SQLOps()
 sql.open()
-qry = 'SELECT author FROM Comments WHERE user_num < 500'
+print sql.status
+qry = 'SELECT author FROM Comments WHERE user_num < 11'
 authors = sql.query(qry)
 authortuple = tuple(author[0] for author in authors)
-authorlist = list(set([author[0] for author in authors]))
-#print authorlist
+authorlist = list(set(authortuple))
 
 qry = 'SELECT subreddit_name FROM Comments WHERE author IN %s'
 subs = sql.query(qry,[authorlist])
 sublist = list(set([sub[0] for sub in subs]))   
-#print sublist
+print sublist
 
-qry = '''SELECT author, subreddit_name, count(author) FROM Comments
+qry = '''SELECT author, subreddit_name, count(*) FROM Comments
          WHERE author IN %s AND subreddit_name IN %s
-         GROUP BY author'''
+         GROUP BY author, subreddit_name
+         ORDER BY author'''
+
 
 comm_counts = sql.query(qry,[authorlist,sublist])
 sql.close()
-
+print comm_counts
 m = len(authorlist)
 n = len(sublist)
 print m,n
@@ -38,3 +40,5 @@ print Ratings
 ind = np.nonzero(Ratings)
 print len(ind[0]), len(ind[1])
 print Ratings[ind]
+np.save('Ratings.npy',Ratings)
+
