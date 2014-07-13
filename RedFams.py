@@ -45,11 +45,14 @@ class SQLOps(object):
         self.con.close()
         self.status = "closed"
      
-    def query(self, qry):
+    def query(self, qry, arg = ''):
         '''Gives us more flexibility, this will just take any SQL 
         query string qry and execute and return it'''
         cur = self.con.cursor()
-        cur.execute(qry)
+        if arg == '':
+           cur.execute(qry)
+        else:
+           cur.execute(qry,arg)
         result = cur.fetchall()
         return result
 
