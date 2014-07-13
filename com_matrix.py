@@ -5,7 +5,7 @@ import numpy as np
 sql = RedFams.SQLOps()
 sql.open()
 print sql.status
-qry = 'SELECT author FROM Comments WHERE user_num < 11'
+qry = 'SELECT author FROM Comments WHERE user_num < 100'
 authors = sql.query(qry)
 authortuple = tuple(author[0] for author in authors)
 authorlist = list(set(authortuple))
