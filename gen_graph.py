@@ -58,6 +58,24 @@ ListSubsSizes = [SubsSizes[i] for i in reddits]
 SubsDescriptions = sql.get_subdata(reddits, 'description_html')
 ListSubsDescriptions = [SubsDescriptions[i] for i in reddits]
 
+SubsURL = sql.get_subdata(reddits, 'url')
+ListSubsURL = [SubsURL[i] for i in reddits]
+
+SubsNSFW = sql.get_subdata(reddits, 'over18')
+ListSubsNSFW = [SubsNSFW[i] for i in reddits]
+for i in xrange(len(ListSubsNSFW)):
+    if ListSubsNSFW[i]:
+       ListSubsNSFW[i] = 'NSFW'
+    else:
+       ListSubsNSFW[i] = 'SFW'
+
+SubsHeaderTitle = sql.get_subdata(reddits,'header_title')
+ListSubsHeaderTitle = [SubsHeaderTitle[i] for i in reddits]
+
+SubsTitle = sql.get_subdata(reddits,'title')
+ListSubsTitle = [SubsTitle[i] for i in reddits]
+
+
 
 sql.close()
 sql.status
@@ -71,7 +89,15 @@ G = nx.to_networkx_graph(A)
 nx.set_node_attributes(G,'Subreddit Name',labels)
 size_dict = {i:float(ListSubsSizes[i]) for i in xrange(len(reddits))}
 desc_dict = {i:str(ListSubsDescriptions[i]) for i in xrange(len(reddits))}
+url_dict = {i:str(ListSubsURL[i]) for i in xrange(len(reddits))}
+NSFW_dict = {i:str(ListSubsBSFW[i]) for i in xrange(len(reddits))}
+headertitle_dict = {i:str(ListSubsHeaderTitle[i]) for i in xrange(len(reddits))}
+title_dict = {i:str(ListSubsTitle[i]) for i in xrange(len(reddits))}
 
 nx.set_node_attributes(G,'size',size_dict)
-nx.set_node_attributes(G,'Descriptions',desc_dict)
+nx.set_node_attributes(G,'url',url_dict)
+nx.set_node_attributes(G,'NSFW',NSFW_dict)
+nx.set_node_attributes(G,'header title',headertitle_dict)
+nx.set_node_attributes(G,'title',title_dict)
+#nx.set_node_attributes(G,'Descriptions',desc_dict)
 nx.write_gexf(G, "test.gexf")
