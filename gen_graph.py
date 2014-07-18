@@ -51,16 +51,19 @@ for i in xrange(len(reddits)):
         if common >= link_min:
            A[i,j] = common
            A[j,i] = A[i,j]
-
+print 'sizes'
 SubsSizes = sql.get_subsize(reddits)
 ListSubsSizes = [SubsSizes[i] for i in reddits]
 
+'''
 SubsDescriptions = sql.get_subdata(reddits, 'description_html')
 ListSubsDescriptions = [SubsDescriptions[i] for i in reddits]
-
+'''
+print 'url'
 SubsURL = sql.get_subdata(reddits, 'url')
 ListSubsURL = [SubsURL[i] for i in reddits]
 
+print 'NSFW'
 SubsNSFW = sql.get_subdata(reddits, 'over18')
 ListSubsNSFW = [SubsNSFW[i] for i in reddits]
 for i in xrange(len(ListSubsNSFW)):
@@ -69,9 +72,11 @@ for i in xrange(len(ListSubsNSFW)):
     else:
        ListSubsNSFW[i] = 'SFW'
 
+print 'header_title'
 SubsHeaderTitle = sql.get_subdata(reddits,'header_title')
 ListSubsHeaderTitle = [SubsHeaderTitle[i] for i in reddits]
 
+print  'title'
 SubsTitle = sql.get_subdata(reddits,'title')
 ListSubsTitle = [SubsTitle[i] for i in reddits]
 
@@ -88,7 +93,7 @@ for i in xrange(len(reddits)):
 G = nx.to_networkx_graph(A)
 nx.set_node_attributes(G,'Subreddit Name',labels)
 size_dict = {i:float(ListSubsSizes[i]) for i in xrange(len(reddits))}
-desc_dict = {i:str(ListSubsDescriptions[i]) for i in xrange(len(reddits))}
+#desc_dict = {i:str(ListSubsDescriptions[i]) for i in xrange(len(reddits))}
 url_dict = {i:str(ListSubsURL[i]) for i in xrange(len(reddits))}
 NSFW_dict = {i:str(ListSubsBSFW[i]) for i in xrange(len(reddits))}
 headertitle_dict = {i:str(ListSubsHeaderTitle[i]) for i in xrange(len(reddits))}
