@@ -5,7 +5,7 @@ import numpy as np
 sql = RedFams.SQLOps()
 sql.open()
 print sql.status
-qry = 'SELECT author FROM Comments WHERE user_num < 100'
+qry = 'SELECT author FROM Comments WHERE user_num < 1000'
 authors = sql.query(qry)
 authortuple = tuple(author[0] for author in authors)
 authorlist = list(set(authortuple))
@@ -22,6 +22,7 @@ qry = '''SELECT author, subreddit_name, count(*) FROM Comments
 
 comm_counts = sql.query(qry,[authorlist,sublist])
 sql.close()
+print 'closed'
 m = len(authorlist)
 n = len(sublist)
 Ratings = np.zeros((m,n))
