@@ -26,11 +26,16 @@ print 'closed'
 m = len(authorlist)
 n = len(sublist)
 Ratings = np.zeros((m,n))
+for result in comm_counts:
+    i,j = authorlist.index(result[0]),sublist.index(result[1])
+    Ratings[i,j] = float(result[2])
+'''    
 for i in xrange(m):
     for j in xrange(n):
         for result in comm_counts:
             if result[0] == authorlist[i] and result[1] == sublist[j]:
                Ratings[i,j] = float(result[2])
+'''
 
 
 ind = np.nonzero(Ratings)
