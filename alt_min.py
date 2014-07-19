@@ -46,7 +46,9 @@ plt.plot(Lambda, mean_RMSE)
 plt.show()
 plt.savefig('RMSE_plot.png')
 
-
+lamb = .05*np.argmin(mean_RMSE)
+comp = alt_min(R,lamb)
+np.save('comp_matrix.npy',comp)
 
 
 
