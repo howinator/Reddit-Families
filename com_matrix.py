@@ -1,6 +1,6 @@
 import RedFams
 import numpy as np
-
+import pickle
 
 sql = RedFams.SQLOps()
 sql.open()
@@ -37,6 +37,8 @@ for i in xrange(m):
                Ratings[i,j] = float(result[2])
 '''
 
+pickle.dump(sublist, open('sublist.p','wb'))
+pickle.dump(authorlist,open('authorlist.p','wb'))
 
 ind = np.nonzero(Ratings)
 np.save('Ratings.npy',Ratings)
