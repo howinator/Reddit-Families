@@ -59,6 +59,13 @@ ListSubsSizes = [SubsSizes[i] for i in reddits]
 SubsDescriptions = sql.get_subdata(reddits, 'description_html')
 ListSubsDescriptions = [SubsDescriptions[i] for i in reddits]
 '''
+qry = '''SELECT display_name,url,over18,header_title,title
+         FROM Subreddits
+         WHERE display_name IN %s
+         GROUP BY display_name'''
+data = sql.query(qry,[reddits])         
+print type(data)
+'''
 print 'url'
 SubsURL = sql.get_subdata(reddits, 'url')
 ListSubsURL = [SubsURL[i] for i in reddits]
@@ -79,7 +86,7 @@ ListSubsHeaderTitle = [SubsHeaderTitle[i] for i in reddits]
 print  'title'
 SubsTitle = sql.get_subdata(reddits,'title')
 ListSubsTitle = [SubsTitle[i] for i in reddits]
-
+'''
 
 
 sql.close()
