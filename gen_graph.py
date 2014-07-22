@@ -14,6 +14,7 @@ usersubs = dict()
 
 TotalComsStart = 0
 TotalComsEnd = 4000000
+print 'getting reddits'
 
 UserSubsDict = sql.get_subnames(TotalComsStart, TotalComsEnd)
 # create dictionary assigning set of subs and count of each 
@@ -51,42 +52,32 @@ for i in xrange(len(reddits)):
         if common >= link_min:
            A[i,j] = common
            A[j,i] = A[i,j]
-print 'sizes'
-SubsSizes = sql.get_subsize(reddits)
-ListSubsSizes = [SubsSizes[i] for i in reddits]
 
 '''
 SubsDescriptions = sql.get_subdata(reddits, 'description_html')
 ListSubsDescriptions = [SubsDescriptions[i] for i in reddits]
 '''
-qry = '''SELECT display_name,url,over18,header_title,title
+print 'getting node attributes'
+qry = '''SELECT display_name,url,subscribers,over18,header_title,title
          FROM Subreddits
          WHERE display_name IN %s
          GROUP BY display_name'''
 data = sql.query(qry,[reddits])         
-print type(data)
-'''
-print 'url'
-SubsURL = sql.get_subdata(reddits, 'url')
-ListSubsURL = [SubsURL[i] for i in reddits]
-
-print 'NSFW'
-SubsNSFW = sql.get_subdata(reddits, 'over18')
-ListSubsNSFW = [SubsNSFW[i] for i in reddits]
-for i in xrange(len(ListSubsNSFW)):
-    if ListSubsNSFW[i]:
-       ListSubsNSFW[i] = 'NSFW'
+url_dict = dict()
+size_dict = dict()
+NSFW_dict = dict()
+title_dict = dict()
+headertitle_dict = dict()
+for i in xrange(len(data)):
+    j = reddits.index(data[i][0])
+    url_dict[j] = str(data[i][1])
+    size_dict = str(data[i][2])
+    if data[i][3] == 1:
+       NSFW_dict[j] = 'NSFW'
     else:
-       ListSubsNSFW[i] = 'SFW'
+       NSFW_dict[j] = 'SFW'
+    title_dict[j] = str(data[i][5])
 
-print 'header_title'
-SubsHeaderTitle = sql.get_subdata(reddits,'header_title')
-ListSubsHeaderTitle = [SubsHeaderTitle[i] for i in reddits]
-
-print  'title'
-SubsTitle = sql.get_subdata(reddits,'title')
-ListSubsTitle = [SubsTitle[i] for i in reddits]
-'''
 
 
 sql.close()
@@ -99,12 +90,6 @@ for i in xrange(len(reddits)):
 
 G = nx.to_networkx_graph(A)
 nx.set_node_attributes(G,'Subreddit Name',labels)
-size_dict = {i:float(ListSubsSizes[i]) for i in xrange(len(reddits))}
-#desc_dict = {i:str(ListSubsDescriptions[i]) for i in xrange(len(reddits))}
-url_dict = {i:str(ListSubsURL[i]) for i in xrange(len(reddits))}
-NSFW_dict = {i:str(ListSubsBSFW[i]) for i in xrange(len(reddits))}
-headertitle_dict = {i:str(ListSubsHeaderTitle[i]) for i in xrange(len(reddits))}
-title_dict = {i:str(ListSubsTitle[i]) for i in xrange(len(reddits))}
 
 nx.set_node_attributes(G,'size',size_dict)
 nx.set_node_attributes(G,'url',url_dict)
