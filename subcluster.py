@@ -11,9 +11,14 @@ print 'sizes'
 
 sim = np.dot(np.transpose(R),R)
 
-k = 10
+k = 100
 
-clusters = spectral_clustering(sim,n_clusters = k)
-print clusters
-print len(clusters)
-print type(clusters)
+clusters = spectral_clustering(affinity = sim,n_clusters = k)
+print np.shape(clusters)
+
+c_dict = {i:clusters[i] for i in xrange(len(clusters))}
+G = nx.read_gexf('test2.gexf')
+nx.set_node_attributes(G,'cluster',c_dict)
+nx.write_gexf(G,'test2.gexf')
+
+
