@@ -3,6 +3,11 @@ from collections import Counter
 import networkx as nx
 import numpy as np
 from matplotlib import pyplot as plt
+import sys
+
+#This is for a weird unicode thing
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 sql = RedFams.SQLOps()
 sql.open()
@@ -71,7 +76,7 @@ headertitle_dict = dict()
 for i in xrange(len(data)):
     j = reddits.index(data[i][0])
     url_dict[j] = str(data[i][1])
-    size_dict[j] = str(data[i][2])
+    size_dict[j] = int(data[i][2])
     if data[i][3] == 1:
        NSFW_dict[j] = 'NSFW'
     else:
