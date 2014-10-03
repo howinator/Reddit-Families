@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 def alt_min(R,l,T=30,k=10):
     u,m = np.shape(R)
@@ -27,6 +28,8 @@ R = np.load('Ratings.npy')
 cvset = np.load('cvset.npy')
 Lambda = .05*np.array(range(1,21))
 RMSE = np.zeros((len(cvset),len(Lambda)))
+begintime = time.clock()
+time0 = begintime
 for i in xrange(len(cvset)):
     print 'cross-validation set', i
     TrR = np.array(R)
@@ -35,6 +38,10 @@ for i in xrange(len(cvset)):
     TrR[ind[0],ind[1]] = 0
     for l in xrange(len(Lambda)):
         print 'lambda =', l
+        time1 = time.clock()
+        print 'Since last iteration:', time1 - time0
+        print 'Since start of algorithm:', time1 - begintime
+        time0 = time1
         pred = alt_min(TrR,Lambda[l])
         RMSE[i,l] = np.sqrt(np.sum(
                     np.square(pred[ind[0],ind[1]]-R[ind[0],ind[1]])))
