@@ -48,18 +48,3 @@ plt.savefig('RMSE_plot.png')
 
 lamb = .05*np.argmin(mean_RMSE)
 comp = alt_min(R,lamb)
-np.save('comp_matrix.npy',comp)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
