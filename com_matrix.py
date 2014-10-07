@@ -1,7 +1,6 @@
 import RedFams
 import numpy as np
 import pickle
-from guppy import hpy
 
 sql = RedFams.SQLOps()
 sql.open()
