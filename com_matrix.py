@@ -29,13 +29,6 @@ Ratings = np.zeros((m,n))
 for result in comm_counts:
     i,j = authorlist.index(result[0]),sublist.index(result[1])
     Ratings[i,j] = round(float(result[2]), 3)
-'''    
-for i in xrange(m):
-    for j in xrange(n):
-        for result in comm_counts:
-            if result[0] == authorlist[i] and result[1] == sublist[j]:
-               Ratings[i,j] = float(result[2])
-'''
 
 pickle.dump(sublist, open('sublist.p','wb'))
 pickle.dump(authorlist,open('authorlist.p','wb'))
